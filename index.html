@@ -20,8 +20,9 @@ small{opacity:.8}
 <canvas id="c"></canvas>
 <div class="ov on" id="menu"><h1>SURVIVORS</h1><div>Moedas: <b id="coins">0</b> 🪙</div>
 <div>Jogador: <b id="who"></b></div>
-<div class="row"><button id="play" style="font-size:22px;border-color:var(--ac)">▶ Jogar</button><button id="opens" style="font-size:22px">🛒 Melhorias</button><button id="opencdx" style="font-size:22px">📖 Codex</button></div>
+<div class="row"><button id="play" style="font-size:22px;border-color:var(--ac)">▶ Jogar</button><button id="openlb" style="font-size:22px">🏆 Ranking</button><button id="opens" style="font-size:22px">🛒 Melhorias</button><button id="opencdx" style="font-size:22px">📖 Codex</button></div>
 <small>WASD ou setas para mover. Ataques são automáticos. Sobreviva!</small></div>
+<div class="ov" id="lbm"><h1>🏆 Ranking</h1><small>Mais inimigos derrotados em uma única run</small><div id="lbl" style="min-width:min(380px,90vw)"></div><button id="lbc">← Voltar</button></div>
 <div class="ov" id="shopm"><h1>Melhorias permanentes</h1><div>Moedas: <b id="coins2">0</b> 🪙</div><div class="row" id="shop"></div><button id="shopc">← Voltar</button></div>
 <div class="ov" id="login"><h1>SURVIVORS</h1><div>Qual é o seu nome?</div><input id="nm" maxlength="16" placeholder="Seu nome" autocomplete="off" style="padding:10px;font-size:18px;border-radius:10px;border:2px solid #4b3b73;background:var(--card);color:var(--fg);text-align:center"><button id="go" style="border-color:var(--ac)">Entrar</button><small>Seu progresso fica salvo neste navegador com o seu nome.</small></div>
 <div class="ov" id="pausem"><h1>Pausado</h1><button id="resume" style="font-size:20px;border-color:var(--ac)">▶ Continuar</button><button id="quit">Voltar ao menu (encerra a run e perde as moedas)</button><small>Esc ou P para pausar</small></div>
@@ -162,7 +163,7 @@ function update(dt){const p=G.p,m=mul();G.t+=dt;
   if(d<p.r+6){G.coins++;return false}return true});
  G.CH=G.CH.filter(o=>{if(Math.hypot(p.x-o.x,p.y-o.y)<p.r+16){chest();return false}return true});
  G.FX.forEach(f=>f.t-=dt);G.FX=G.FX.filter(f=>f.t>0);G.msgT-=dt}
-function die(){G.dead=true;meta.coins+=G.coins;save();
+function die(){G.dead=true;lbSubmit(G.kills);meta.coins+=G.coins;save();
  const t=Math.floor(G.t);$('stats').innerHTML=`Tempo: ${Math.floor(t/60)}:${String(t%60).padStart(2,'0')} · Nível ${G.p.lv} · Abates: ${G.kills}<br>Moedas ganhas: ${G.coins} 🪙`;$('over').classList.add('on')}
 function draw(){cx.setTransform(DPR,0,0,DPR,0,0);const p=G.p,ox=W/2-p.x*Z,oy=H/2-p.y*Z;cx.fillStyle='#1b1626';cx.fillRect(0,0,W,H);
  cx.strokeStyle='#241d33';cx.lineWidth=1;cx.beginPath();const g=80*Z;
@@ -190,6 +191,22 @@ function draw(){cx.setTransform(DPR,0,0,DPR,0,0);const p=G.p,ox=W/2-p.x*Z,oy=H/2
 let last=0;
 function loop(now){const dt=Math.min(.05,(now-last)/1000);last=now;
  if(G){if(!G.pause&&!G.paused&&!G.dead)update(dt);draw()}requestAnimationFrame(loop)}
+// Ranking global: cole aqui a URL do Firebase Realtime Database (sem barra no final). Vazio = ranking local.
+const LB_URL='https://survivalist-1eb3c-default-rtdb.firebaseio.com';
+const lbKey=n=>n.replace(/[.$#\[\]\/]/g,'_');
+async function lbGet(){if(LB_URL){try{const r=await fetch(LB_URL+'/lb.json');return(await r.json())||{}}catch(e){return null}}try{return JSON.parse(localStorage.getItem('vs_lb')||'{}')}catch(e){return {}}}
+async function lbSubmit(k){if(!user||!k)return;const key=lbKey(user);try{
+ if(LB_URL){const u=`${LB_URL}/lb/${encodeURIComponent(key)}.json`;const cur=await(await fetch(u)).json();if(cur&&cur.k>=k)return;await fetch(u,{method:'PUT',body:JSON.stringify({n:user,k})})}
+ else{const d=JSON.parse(localStorage.getItem('vs_lb')||'{}');if(!d[key]||d[key].k<k){d[key]={n:user,k};localStorage.setItem('vs_lb',JSON.stringify(d))}}}catch(e){}}
+$('openlb').onclick=async()=>{const box=$('lbl');$('lbm').classList.add('on');box.textContent='Carregando...';const d=await lbGet();
+ if(d===null){box.textContent='Não foi possível carregar o ranking.';return}
+ const a=Object.values(d).filter(x=>x&&typeof x.k==='number'&&typeof x.n==='string').sort((p,q)=>q.k-p.k).slice(0,20);box.textContent='';
+ if(!a.length)box.textContent='Ninguém no ranking ainda. Seja o primeiro!';
+ a.forEach((x,i)=>{const r=document.createElement('div'),l=document.createElement('span'),v=document.createElement('b');
+  r.style.cssText='display:flex;justify-content:space-between;gap:20px;padding:8px 14px;margin:4px 0;border-radius:8px;background:var(--card)'+(x.n===user?';border:2px solid var(--ac)':'');
+  l.textContent=(i+1)+'. '+x.n.slice(0,16);v.textContent=x.k+' ☠';r.append(l,v);box.appendChild(r)});
+ if(!LB_URL){const s=document.createElement('small');s.textContent='Ranking local: mostra apenas jogadores deste navegador.';box.appendChild(s)}};
+$('lbc').onclick=()=>$('lbm').classList.remove('on');
 $('play').onclick=newGame;
 $('opens').onclick=()=>{shop();$('shopm').classList.add('on')};$('shopc').onclick=()=>$('shopm').classList.remove('on');
 function doLogin(){const n=$('nm').value.trim();if(!n||user)return;loadUser(n);$('login').classList.remove('on');shop()}
@@ -198,7 +215,7 @@ $('go').onclick=doLogin;$('nm').addEventListener('keydown',e=>{e.stopPropagation
 {let su=null;try{su=localStorage.getItem('vs_user')}catch(e){}if(su)loadUser(su);else $('login').classList.add('on')}
 function togglePause(){G.paused=!G.paused;$('pausem').classList.toggle('on',G.paused)}
 $('resume').onclick=togglePause;
-$('quit').onclick=()=>{$('pausem').classList.remove('on');$('menu').classList.add('on');G=null;cx.clearRect(0,0,W,H);shop()};
+$('quit').onclick=()=>{if(G)lbSubmit(G.kills);$('pausem').classList.remove('on');$('menu').classList.add('on');G=null;cx.clearRect(0,0,W,H);shop()};
 $('cdxc').onclick=()=>{$('codex').classList.remove('on');$('tip').style.display='none'};
 (()=>{const tp=$('tip'),cd=$('cdx');const show=e=>{const c=e.target.closest('.cxc');if(!c){tp.style.display='none';return}
  if(tp._c!==c){tp.innerHTML=c.querySelector('.det').innerHTML;tp._c=c}tp.style.display='flex';
