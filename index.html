@@ -192,7 +192,7 @@ let last=0;
 function loop(now){const dt=Math.min(.05,(now-last)/1000);last=now;
  if(G){if(!G.pause&&!G.paused&&!G.dead)update(dt);draw()}requestAnimationFrame(loop)}
 // Ranking global: cole aqui a URL do Firebase Realtime Database (sem barra no final). Vazio = ranking local.
-const LB_URL='https://survivalist-1eb3c-default-rtdb.firebaseio.com/';
+const LB_URL='https://survivalist-1eb3c-default-rtdb.firebaseio.com';
 const lbKey=n=>n.replace(/[.$#\[\]\/]/g,'_');
 async function lbGet(){if(LB_URL){try{const r=await fetch(LB_URL+'/lb.json');return(await r.json())||{}}catch(e){return null}}try{return JSON.parse(localStorage.getItem('vs_lb')||'{}')}catch(e){return {}}}
 async function lbSubmit(k,t){if(!user||!k)return;t=Math.ceil(t)+1;const key=lbKey(user);try{
