@@ -30,7 +30,7 @@ small{opacity:.8}
 <div id="tip"></div>
 <div class="ov" id="lvl"><h2>Subiu de nível! Escolha:</h2><div class="row" id="opts"></div><small>Atalhos: 1 a 4</small></div>
 <div class="ov" id="over"><h1>Fim de jogo</h1><div id="stats"></div><button id="back">Voltar ao menu</button></div>
-<script>
+<script>(()=>{
 const cv=document.getElementById('c'),cx=cv.getContext('2d'),$=id=>document.getElementById(id);
 let W,H,Z=1,DPR=1;const vr=()=>Math.hypot(W,H)/(2*Z);function rs(){W=innerWidth;H=innerHeight;DPR=Math.min(devicePixelRatio||1,2);cv.width=W*DPR;cv.height=H*DPR;Z=Math.max(.7,Math.min(1.5,Math.min(W,H)/720));cx.setTransform(DPR,0,0,DPR,0,0)}addEventListener('resize',rs);rs();
 // ---------- meta ----------
@@ -163,7 +163,7 @@ function update(dt){const p=G.p,m=mul();G.t+=dt;
   if(d<p.r+6){G.coins++;return false}return true});
  G.CH=G.CH.filter(o=>{if(Math.hypot(p.x-o.x,p.y-o.y)<p.r+16){chest();return false}return true});
  G.FX.forEach(f=>f.t-=dt);G.FX=G.FX.filter(f=>f.t>0);G.msgT-=dt}
-function die(){G.dead=true;lbSubmit(G.kills);meta.coins+=G.coins;save();
+function die(){G.dead=true;lbSubmit(G.kills,G.t);meta.coins+=G.coins;save();
  const t=Math.floor(G.t);$('stats').innerHTML=`Tempo: ${Math.floor(t/60)}:${String(t%60).padStart(2,'0')} · Nível ${G.p.lv} · Abates: ${G.kills}<br>Moedas ganhas: ${G.coins} 🪙`;$('over').classList.add('on')}
 function draw(){cx.setTransform(DPR,0,0,DPR,0,0);const p=G.p,ox=W/2-p.x*Z,oy=H/2-p.y*Z;cx.fillStyle='#1b1626';cx.fillRect(0,0,W,H);
  cx.strokeStyle='#241d33';cx.lineWidth=1;cx.beginPath();const g=80*Z;
@@ -191,12 +191,13 @@ function draw(){cx.setTransform(DPR,0,0,DPR,0,0);const p=G.p,ox=W/2-p.x*Z,oy=H/2
 let last=0;
 function loop(now){const dt=Math.min(.05,(now-last)/1000);last=now;
  if(G){if(!G.pause&&!G.paused&&!G.dead)update(dt);draw()}requestAnimationFrame(loop)}
-const LB_URL='https://survivalist-1eb3c-default-rtdb.firebaseio.com';
+// Ranking global: cole aqui a URL do Firebase Realtime Database (sem barra no final). Vazio = ranking local.
+const LB_URL='';
 const lbKey=n=>n.replace(/[.$#\[\]\/]/g,'_');
 async function lbGet(){if(LB_URL){try{const r=await fetch(LB_URL+'/lb.json');return(await r.json())||{}}catch(e){return null}}try{return JSON.parse(localStorage.getItem('vs_lb')||'{}')}catch(e){return {}}}
-async function lbSubmit(k){if(!user||!k)return;const key=lbKey(user);try{
- if(LB_URL){const u=`${LB_URL}/lb/${encodeURIComponent(key)}.json`;const cur=await(await fetch(u)).json();if(cur&&cur.k>=k)return;await fetch(u,{method:'PUT',body:JSON.stringify({n:user,k})})}
- else{const d=JSON.parse(localStorage.getItem('vs_lb')||'{}');if(!d[key]||d[key].k<k){d[key]={n:user,k};localStorage.setItem('vs_lb',JSON.stringify(d))}}}catch(e){}}
+async function lbSubmit(k,t){if(!user||!k)return;t=Math.ceil(t)+1;const key=lbKey(user);try{
+ if(LB_URL){const u=`${LB_URL}/lb/${encodeURIComponent(key)}.json`;const cur=await(await fetch(u)).json();if(cur&&cur.k>=k)return;await fetch(u,{method:'PUT',body:JSON.stringify({n:user,k,t})})}
+ else{const d=JSON.parse(localStorage.getItem('vs_lb')||'{}');if(!d[key]||d[key].k<k){d[key]={n:user,k,t};localStorage.setItem('vs_lb',JSON.stringify(d))}}}catch(e){}}
 $('openlb').onclick=async()=>{const box=$('lbl');$('lbm').classList.add('on');box.textContent='Carregando...';const d=await lbGet();
  if(d===null){box.textContent='Não foi possível carregar o ranking.';return}
  const a=Object.values(d).filter(x=>x&&typeof x.k==='number'&&typeof x.n==='string').sort((p,q)=>q.k-p.k).slice(0,20);box.textContent='';
@@ -214,7 +215,7 @@ $('go').onclick=doLogin;$('nm').addEventListener('keydown',e=>{e.stopPropagation
 {let su=null;try{su=localStorage.getItem('vs_user')}catch(e){}if(su)loadUser(su);else $('login').classList.add('on')}
 function togglePause(){G.paused=!G.paused;$('pausem').classList.toggle('on',G.paused)}
 $('resume').onclick=togglePause;
-$('quit').onclick=()=>{if(G)lbSubmit(G.kills);$('pausem').classList.remove('on');$('menu').classList.add('on');G=null;cx.clearRect(0,0,W,H);shop()};
+$('quit').onclick=()=>{if(G)lbSubmit(G.kills,G.t);$('pausem').classList.remove('on');$('menu').classList.add('on');G=null;cx.clearRect(0,0,W,H);shop()};
 $('cdxc').onclick=()=>{$('codex').classList.remove('on');$('tip').style.display='none'};
 (()=>{const tp=$('tip'),cd=$('cdx');const show=e=>{const c=e.target.closest('.cxc');if(!c){tp.style.display='none';return}
  if(tp._c!==c){tp.innerHTML=c.querySelector('.det').innerHTML;tp._c=c}tp.style.display='flex';
@@ -222,4 +223,4 @@ $('cdxc').onclick=()=>{$('codex').classList.remove('on');$('tip').style.display=
  cd.addEventListener('mousemove',show);cd.addEventListener('click',show);cd.addEventListener('mouseleave',()=>tp.style.display='none')})();
 $('opencdx').onclick=()=>{$('cdx').innerHTML=[['w','⚔ Armas'],['p','✦ Passivos']].map(([k,t])=>`<h2>${t}</h2><div class="row" style="margin:10px 0 18px">`+Object.keys(ITEMS).filter(i=>ITEMS[i].k===k).map(i=>{const it=ITEMS[i];return `<div class="card cxc" style="background:var(--card);border:2px solid #4b3b73;border-radius:10px;padding:10px"><span class="tag ${k==='p'?'p':''}">${k==='w'?'ARMA':'PASSIVO'}</span><b>${it.n}</b><span class="det"><small>${it.d}</small>${it.dt?`<small>Dano ${DT[it.dt]}</small>`:''}${UT[i]?`<small>${it.k==='p'?[1,2,3,4,5].map(n=>'Nv '+n+': '+UT[i](n)).join('<br>'):'Por nível: '+UT[i](1)}</small>`:''}<small>Nível máx: ${MAXL}</small></span></div>`}).join('')+'</div>').join('');$('codex').classList.add('on')};$('back').onclick=()=>{$('over').classList.remove('on');$('menu').classList.add('on');G=null;cx.clearRect(0,0,W,H);shop()};
 shop();
-</script></body></html>
+})();</script></body></html>
