@@ -114,7 +114,7 @@ const ITEMS={
 const PX=2;
 // ---------- personagens jogaveis (spritesheet 3 colunas x 4 linhas: baixo, esquerda, direita, cima) ----------
 const CHARS={merlin:{name:'Merlin',fw:32,fh:32,ax:16,ay:12,by:21,seq:[1,0,1,2],idle:1,start:'wand',ok:false,img:new Image()},
- mrww:{name:'Mr.WorldWide',fw:32,fh:32,ax:16,ay:16,by:32,seq:[0,1,2,3],idle:0,start:'knife',locked:true,unlock:{map:'cidadela',chance:.2},hint:'Bloqueado: procure por ele na Cidadela.',ok:false,img:new Image()}};
+ mrww:{name:'Mr.WorldWide',fw:32,fh:32,ax:16,ay:16,by:32,seq:[0,1,2,3],idle:0,sc:.5,start:'knife',locked:true,unlock:{map:'cidadela',chance:.2,minD:1200,maxD:2600},hint:'Bloqueado: procure por ele na Cidadela.',ok:false,img:new Image()}};
 let curChar='merlin';
 for(const k in CHARS){const C=CHARS[k];C.img.onload=()=>{C.ok=true}}
 CHARS.merlin.img.src='data:image/png;base64,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';
@@ -122,7 +122,7 @@ CHARS.mrww.img.src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAYAAA
 $('chr').textContent=CHARS[curChar].name;
 function drawPlayer(p){const C=CHARS[curChar];
  if(!C.ok){cx.fillStyle='#4caf50';cx.beginPath();cx.arc(W/2,H/2,12*Z,0,6.283);cx.fill();return}
- const s=Math.max(1,Math.round(PX*Z*DPR)),f=p.mv?C.seq[Math.floor(G.t*8)%C.seq.length]:C.idle,row=p.dir||0;
+ const s=Math.max(1,Math.round(PX*(C.sc||1)*Z*DPR)),f=p.mv?C.seq[Math.floor(G.t*8)%C.seq.length]:C.idle,row=p.dir||0;
  const mx=W*DPR/2,my=H*DPR/2,x=Math.round(mx-C.ax*s)/DPR,y=Math.round(my-C.ay*s)/DPR,w=C.fw*s/DPR,h=C.fh*s/DPR;
  cx.save();cx.imageSmoothingEnabled=false;
  cx.fillStyle='#0005';cx.fillRect(Math.round(mx-5*s)/DPR,Math.round(my+(C.by-C.ay-1)*s)/DPR,10*s/DPR,s/DPR);
@@ -238,8 +238,9 @@ function hitFx(e,t){const H=G.HP||(G.HP=[]);if(H.length>250)return;const cs=HC[t
 // ---------- versao e patch notes ----------
 // A cada atualizacao: ajuste VERSION e adicione uma entrada NO TOPO de PATCHES.
 // Regra: pouco conteudo = muda so o ultimo numero (2.3.1 -> 2.3.2); conteudo medio = muda o do meio e zera o ultimo (2.3.1 -> 2.4.0); conteudo massivo = muda o primeiro e zera o resto (2.3.1 -> 3.0.0).
-const VERSION='3.1.0';
+const VERSION='3.1.1';
 const PATCHES=[
+ {v:'3.1.1',d:'12/11/2026',n:['O sprite do Mr.WorldWide agora tem o mesmo tamanho do Merlin.','Mr.WorldWide só aparece na Cidadela entre 1200 e 2600 unidades de distância do ponto inicial (nem colado, nem longe demais).','O mapa aberto (J) ficou bem maior: agora mostra uma área de 256x256 quadrados (antes 128x128).']},
  {v:'3.1.0',d:'12/11/2026',n:['Dificuldade muito maior: a vida dos inimigos agora é multiplicada por 3 a cada 10 minutos (10, 20 e 30 min), o dano e a velocidade crescem com o tempo e os inimigos nascem mais rápido.','Depois de 30 minutos só nascem bosses (no máximo 14 ao mesmo tempo).','Gemas de XP: ao chegar a 100 gemas de um mesmo tipo no chão, elas se fundem em uma única gema maior de cor diferente (laranja, dourada ou prateada), mantendo a soma exata do XP.']},
  {v:'3.0.0',d:'12/11/2026',n:['GRANDE ATUALIZAÇÃO: A Queda da Cidadela!','Ao clicar em Jogar agora você escolhe o mapa: Floresta (o de sempre) ou a nova Cidadela, uma cidade em ruínas gerada de forma procedural com quarteirões, ruas, prédios, muros de tijolo, cercas de arame com entradas e lixo. Tudo tem colisão, e as entradas das cercas e muros ficam livres.','Na Cidadela os inimigos são zumbis: pequeno (fraco), grande (forte) e com machado (boss).','Novo personagem: Mr.WorldWide, que começa com a arma Faca. Ele vem bloqueado: na Cidadela há 20% de chance de ele aparecer na partida; encostar nele o desbloqueia. Futuros personagens bloqueados funcionarão do mesmo jeito.','Nova tela Personagens no menu inicial para escolher quem jogar.','Mapa aberto: aperte J (ou o botão MAPA no celular) para ver o terreno ao redor, sua posição e a de personagens para desbloquear. O jogo fica pausado enquanto o mapa está aberto.','Depois de 10 minutos só nascem inimigos fortes.','Bosses com muito mais vida e imunes ao Cometa.','Novo item raro dos objetos quebráveis: Ímã, que puxa todo o XP do mapa até você.','Ao subir de nível com tudo no máximo, você ganha 10 moedas.','Melhorias permanentes bem mais caras: o preço sobe 1,7x a cada nível.','Objetos quebráveis agora soltam menos moedas e com menos frequência.']},
  {v:'2.4.1',d:'12/11/2026',n:['A barra de vida agora fica sempre embaixo do personagem, em um estilo minimalista de pixels (fundo escuro, preenchimento vermelho com um brilho fino).','Lista de armas e passivos subiu um pouco no canto da tela, já que a barra antiga saiu de lá.']},
@@ -280,7 +281,7 @@ function drawJoy(){if(!MOB&&!JOY.seen)return;cx.save();const bx=JOY.on?JOY.ox:90
  cx.strokeStyle='#fff';cx.fillStyle='#fff';cx.lineWidth=3;cx.globalAlpha=JOY.on?.5:.2;cx.beginPath();cx.arc(bx,by,JOY.R,0,6.283);cx.stroke();
  cx.globalAlpha=JOY.on?.6:.25;cx.beginPath();cx.arc(bx+(JOY.on?JOY.kx:0),by+(JOY.on?JOY.ky:0),JOY.R*.45,0,6.283);cx.fill();cx.restore()}
 // ---------- barra de vida minimalista (fica sempre embaixo do personagem) ----------
-function drawHp(p){const C=CHARS[curChar],s=Math.max(1,Math.round(PX*Z*DPR)),u=Math.max(1,Math.round(s/2)),iw=30*u,ih=3*u,fw=Math.round(iw*Math.max(0,p.hp)/p.mhp),
+function drawHp(p){const C=CHARS[curChar],s=Math.max(1,Math.round(PX*(C.sc||1)*Z*DPR)),u=Math.max(1,Math.round(s/2)),iw=30*u,ih=3*u,fw=Math.round(iw*Math.max(0,p.hp)/p.mhp),
  x=Math.round(W*DPR/2-iw/2-u),y=Math.round(H*DPR/2+(C.by-C.ay)*s+2*s);
  cx.save();cx.setTransform(1,0,0,1,0,0);
  cx.fillStyle='#120d1f';cx.fillRect(x,y,iw+2*u,ih+2*u);
@@ -350,8 +351,8 @@ function zombieSpr(e,tint){const kd=e.boss?'axe':e.r>10?'big':'small',a=Math.ata
 function unlocked(id){const c=CHARS[id];return !c.locked||!!(meta.un&&meta.un[id])}
 function unlockChar(id){meta.un=meta.un||{};meta.un[id]=1;save();toast('Personagem desbloqueado: '+CHARS[id].name+'!')}
 function spawnNpcs(){G.NPC=[];for(const id in CHARS){const c=CHARS[id];if(c.locked&&!unlocked(id)&&c.unlock&&c.unlock.map===curMap&&Math.random()<c.unlock.chance){
-  for(let t=0;t<40;t++){const a=Math.random()*6.283,d=700+Math.random()*1100,sp=freeSpot(Math.cos(a)*d,Math.sin(a)*d,16);if(!blk(sp.x,sp.y,16)&&(curMap!=='cidadela'||'rsp'.includes(T(Math.floor(sp.x/TS),Math.floor(sp.y/TS)).k))){G.NPC.push({id,x:sp.x,y:sp.y});break}}}}}
-function drawNpc(n){const c=CHARS[n.id];if(!c.ok)return;const k=2,bob=Math.sin(G.t*4)*2;cx.fillStyle='#0005';cx.fillRect(Math.round(n.x-10*k),Math.round(n.y+(c.by-c.ay-1)*k),20*k,k);
+  for(let t=0;t<40;t++){const a=Math.random()*6.283,d=c.unlock.minD+Math.random()*(c.unlock.maxD-c.unlock.minD),sp=freeSpot(Math.cos(a)*d,Math.sin(a)*d,16),dd=Math.hypot(sp.x,sp.y);if(dd>=c.unlock.minD&&dd<=c.unlock.maxD&&!blk(sp.x,sp.y,16)&&(curMap!=='cidadela'||'rsp'.includes(T(Math.floor(sp.x/TS),Math.floor(sp.y/TS)).k))){G.NPC.push({id,x:sp.x,y:sp.y});break}}}}}
+function drawNpc(n){const c=CHARS[n.id];if(!c.ok)return;const k=2*(c.sc||1),bob=Math.sin(G.t*4)*2;cx.fillStyle='#0005';cx.fillRect(Math.round(n.x-10*k),Math.round(n.y+(c.by-c.ay-1)*k),20*k,k);
  cx.imageSmoothingEnabled=false;cx.drawImage(c.img,c.idle*c.fw,0,c.fw,c.fh,Math.round(n.x-c.ax*k),Math.round(n.y-c.ay*k),c.fw*k,c.fh*k);
  cx.fillStyle='#f5c542';cx.fillRect(Math.round(n.x-3),Math.round(n.y-c.ay*k-14+bob),6,6);cx.fillRect(Math.round(n.x-1),Math.round(n.y-c.ay*k-20+bob),2,5)}
 function buildChars(){const b=$('chars');b.textContent='';for(const id in CHARS){const c=CHARS[id],ok=unlocked(id),el=document.createElement('button'),cv2=document.createElement('canvas');el.className='card';cv2.width=cv2.height=32;
@@ -365,13 +366,13 @@ function buildMaps(){const b=$('maps');b.textContent='';for(const id in MAPS){co
 function mapColor(tx,ty){const t=T(tx,ty);
  if(curMap==='cidadela')return t.bd?(t.bd.s?'#8a3a3a':'#6a6a80'):({r:'#4b4658',a:'#5a5568',s:'#b9a398',p:'#b9a398',g:'#6f9c5e',e:'#6f9c5e',m:'#9b3f3f',f:'#8b9a9a',t:'#6d5f58'})[t.k]||'#6f9c5e';
  if(t.w)return '#3f8fc0';if(t.o)return t.o.s.h===46?'#2e6b34':'#9a977f';return t.v?'#7fb058':'#86b85f'}
-function openMap(){if(!G||G.dead||G.pause||G.paused||G.mapOpen)return;G.mapOpen=true;const R=64,px=5,c=$('mapcv');c.width=c.height=R*2*px;const g=c.getContext('2d'),ptx=Math.floor(G.p.x/TS),pty=Math.floor(G.p.y/TS);
+function openMap(){if(!G||G.dead||G.pause||G.paused||G.mapOpen)return;G.mapOpen=true;const R=128,px=4,c=$('mapcv');c.width=c.height=R*2*px;const g=c.getContext('2d'),ptx=Math.floor(G.p.x/TS),pty=Math.floor(G.p.y/TS);
  for(let j=-R;j<R;j++)for(let i=-R;i<R;i++){g.fillStyle=mapColor(ptx+i,pty+j);g.fillRect((i+R)*px,(j+R)*px,px,px)}
- const S=R*2*px;(G.NPC||[]).forEach(n=>{let mx=(n.x/TS-ptx+R)*px,my=(n.y/TS-pty+R)*px;mx=Math.max(14,Math.min(S-14,mx));my=Math.max(14,Math.min(S-14,my));
-  g.fillStyle='#000';g.beginPath();g.moveTo(mx,my-12);g.lineTo(mx+10,my);g.lineTo(mx,my+12);g.lineTo(mx-10,my);g.fill();g.fillStyle='#f5c542';g.beginPath();g.moveTo(mx,my-9);g.lineTo(mx+7,my);g.lineTo(mx,my+9);g.lineTo(mx-7,my);g.fill();
-  g.font='bold 14px monospace';g.fillStyle='#000';g.fillText(CHARS[n.id].name,Math.min(mx+12,S-110)+1,my-8+1);g.fillStyle='#fff';g.fillText(CHARS[n.id].name,Math.min(mx+12,S-110),my-8)});
- g.fillStyle='#fff';g.beginPath();g.arc(S/2,S/2,8,0,6.283);g.fill();g.fillStyle='#e5484d';g.beginPath();g.arc(S/2,S/2,5,0,6.283);g.fill();
- g.font='bold 14px monospace';g.fillStyle='#000';g.fillText('Você',S/2+13,S/2+5);g.fillStyle='#fff';g.fillText('Você',S/2+12,S/2+4);
+ const S=R*2*px;(G.NPC||[]).forEach(n=>{let mx=(n.x/TS-ptx+R)*px,my=(n.y/TS-pty+R)*px;mx=Math.max(24,Math.min(S-24,mx));my=Math.max(24,Math.min(S-24,my));
+  g.fillStyle='#000';g.beginPath();g.moveTo(mx,my-20);g.lineTo(mx+16,my);g.lineTo(mx,my+20);g.lineTo(mx-16,my);g.fill();g.fillStyle='#f5c542';g.beginPath();g.moveTo(mx,my-15);g.lineTo(mx+11,my);g.lineTo(mx,my+15);g.lineTo(mx-11,my);g.fill();
+  g.font='bold 26px monospace';const lx=Math.min(mx+20,S-210);g.fillStyle='#000';g.fillText(CHARS[n.id].name,lx+2,my-12+2);g.fillStyle='#fff';g.fillText(CHARS[n.id].name,lx,my-12)});
+ g.fillStyle='#fff';g.beginPath();g.arc(S/2,S/2,13,0,6.283);g.fill();g.fillStyle='#e5484d';g.beginPath();g.arc(S/2,S/2,8,0,6.283);g.fill();
+ g.font='bold 26px monospace';g.fillStyle='#000';g.fillText('Você',S/2+22,S/2+9);g.fillStyle='#fff';g.fillText('Você',S/2+20,S/2+7);
  $('mapv').classList.add('on')}
 function closeMap(){if(!G)return;G.mapOpen=false;$('mapv').classList.remove('on')}
 // ---------- fusao de gemas: 100 gemas do mesmo tipo viram 1 gema de cor distinta com o XP somado ----------
