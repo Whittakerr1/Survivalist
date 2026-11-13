@@ -225,8 +225,9 @@ function hitFx(e,t){const H=G.HP||(G.HP=[]);if(H.length>250)return;const cs=HC[t
 // ---------- versao e patch notes ----------
 // A cada atualizacao: ajuste VERSION e adicione uma entrada NO TOPO de PATCHES.
 // Regra: pouco conteudo = muda so o ultimo numero (2.3.1 -> 2.3.2); conteudo medio = muda o do meio e zera o ultimo (2.3.1 -> 2.4.0); conteudo massivo = muda o primeiro e zera o resto (2.3.1 -> 3.0.0).
-const VERSION='2.4.0';
+const VERSION='2.4.1';
 const PATCHES=[
+ {v:'2.4.1',d:'12/11/2026',n:['A barra de vida agora fica sempre embaixo do personagem, em um estilo minimalista de pixels (fundo escuro, preenchimento vermelho com um brilho fino).','Lista de armas e passivos subiu um pouco no canto da tela, já que a barra antiga saiu de lá.']},
  {v:'2.4.0',d:'12/11/2026',n:['Versão para celular: o jogo detecta aparelhos de toque e mostra um joystick virtual, que aparece onde você encosta o dedo e move o Merlin com velocidade proporcional ao quanto você arrasta.','Botão de pause na tela para celular (as opções de upgrade, menus e botões continuam clicáveis normalmente).','Menus ajustados para telas pequenas: agora dá para rolar até o topo e as cartas ficam menores em telas baixas.']},
  {v:'2.3.2',d:'12/11/2026',n:['Corrigido: as opções de upgrade não apareciam ao subir de nível (um conflito com o botão de Opções do pause).']},
  {v:'2.3.1',d:'12/11/2026',n:["Corrigido: o menu de Opções aparecia atrás do menu de pause. Agora o pause some ao abrir as Opções e volta ao fechá-las, com o jogo continuando pausado.", "Versões do histórico reorganizadas pelo tamanho de cada atualização: pequena muda o último número, média o do meio e massiva o primeiro."]},
@@ -263,6 +264,14 @@ cv.addEventListener('pointerup',jend);cv.addEventListener('pointercancel',jend);
 function drawJoy(){if(!MOB&&!JOY.seen)return;cx.save();const bx=JOY.on?JOY.ox:90,by=JOY.on?JOY.oy:H-110;
  cx.strokeStyle='#fff';cx.fillStyle='#fff';cx.lineWidth=3;cx.globalAlpha=JOY.on?.5:.2;cx.beginPath();cx.arc(bx,by,JOY.R,0,6.283);cx.stroke();
  cx.globalAlpha=JOY.on?.6:.25;cx.beginPath();cx.arc(bx+(JOY.on?JOY.kx:0),by+(JOY.on?JOY.ky:0),JOY.R*.45,0,6.283);cx.fill();cx.restore()}
+// ---------- barra de vida minimalista (fica sempre embaixo do personagem) ----------
+function drawHp(p){const C=CHARS[curChar],s=Math.max(1,Math.round(PX*Z*DPR)),u=Math.max(1,Math.round(s/2)),iw=30*u,ih=3*u,fw=Math.round(iw*Math.max(0,p.hp)/p.mhp),
+ x=Math.round(W*DPR/2-iw/2-u),y=Math.round(H*DPR/2+(C.by-C.ay)*s+2*s);
+ cx.save();cx.setTransform(1,0,0,1,0,0);
+ cx.fillStyle='#120d1f';cx.fillRect(x,y,iw+2*u,ih+2*u);
+ cx.fillStyle='#4a2432';cx.fillRect(x+u,y+u,iw,ih);
+ if(fw>0){cx.fillStyle='#e5484d';cx.fillRect(x+u,y+u,fw,ih);cx.fillStyle='#ff8a8a';cx.fillRect(x+u,y+u,fw,u)}
+ cx.restore()}
 // ---------- estado ----------
 let G=null,keys={},running=false;
 addEventListener('keydown',e=>{keys[e.key.toLowerCase()]=1;if(e.key.toLowerCase()==='m'&&!e.repeat)MUS.muted=SFX.muted=SWS.muted=WSND.muted=KSND.muted=BSND.muted=!MUS.muted;if((e.key==='Escape'||e.key.toLowerCase()==='p')&&G&&!G.dead&&!G.pause){if($('optm').classList.contains('on')){$('optm').classList.remove('on');$('pausem').classList.add('on')}else togglePause()}if(G&&G.pause&&'1234'.includes(e.key))pick(+e.key-1)});
@@ -382,14 +391,14 @@ function draw(){cx.setTransform(DPR,0,0,DPR,0,0);const p=G.p,ox=W/2-p.x*Z,oy=H/2
  if(G.HP){for(const q of G.HP){cx.globalAlpha=Math.min(1,q.l*5);cx.fillStyle=q.c;cx.fillRect(Math.round(q.x),Math.round(q.y),q.s,q.s)}cx.globalAlpha=1}
  G.FX.forEach(f=>{if(f.sp==='bolt'&&LS.ok){boltSpr(f);return}cx.globalAlpha=f.t*4;circ(f.x,f.y,f.r,f.c);if(!f.nb){cx.fillStyle=f.c;cx.fillRect(f.x-3,f.y-500,6,500)}cx.globalAlpha=1});
  
- cx.restore();drawPlayer(p);drawObs(1);drawJoy();if(G.fl>0){cx.globalAlpha=Math.min(.6,G.fl*1.5);cx.fillStyle=G.flc;cx.fillRect(0,0,W,H);cx.globalAlpha=1}
+ cx.restore();drawPlayer(p);drawObs(1);drawHp(p);drawJoy();if(G.fl>0){cx.globalAlpha=Math.min(.6,G.fl*1.5);cx.fillStyle=G.flc;cx.fillRect(0,0,W,H);cx.globalAlpha=1}
  // HUD
  const need_=need(p.lv);cx.fillStyle='#000a';cx.fillRect(0,0,W,18);cx.fillStyle='#29b6f6';cx.fillRect(0,0,Math.min(W,W*p.xp/need_),18);
  cx.fillStyle='#fff';cx.font='bold 10px "Press Start 2P",monospace';cx.textAlign='left';cx.fillText('Nv '+p.lv,8,13);
  cx.textAlign='center';const t=Math.floor(G.t);cx.font='bold 18px "Press Start 2P",monospace';cx.fillText(`${Math.floor(t/60)}:${String(t%60).padStart(2,'0')}`,W/2,44);
  cx.font='bold 11px "Press Start 2P",monospace';cx.textAlign='right';cx.fillText(`🪙 ${G.coins}   ☠ ${G.kills}`,W-10,42);
- cx.textAlign='left';cx.fillStyle='#000a';cx.fillRect(10,26,160,12);cx.fillStyle='#e53935';cx.fillRect(10,26,160*Math.max(0,p.hp)/p.mhp,12);
- cx.fillStyle='#fff';cx.font='9px "Press Start 2P",monospace';let y=62;for(const k in G.inv){cx.fillText(`${ITEMS[k].k==='w'?'⚔':'✦'} ${ITEMS[k].n} ${G.inv[k]}`,10,y);y+=15}
+ cx.textAlign='left';
+ cx.fillStyle='#fff';cx.font='9px "Press Start 2P",monospace';let y=44;for(const k in G.inv){cx.fillText(`${ITEMS[k].k==='w'?'⚔':'✦'} ${ITEMS[k].n} ${G.inv[k]}`,10,y);y+=15}
  if(G.msgT>0){cx.textAlign='center';cx.font='bold 14px "Press Start 2P",monospace';cx.fillStyle='#f5c542';cx.fillText(G.msg,W/2,80)}}
 let last=0;
 function loop(now){const dt=Math.min(.05,(now-last)/1000);last=now;
