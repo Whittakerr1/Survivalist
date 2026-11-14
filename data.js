@@ -7,12 +7,16 @@ const ITEMS={
  aura:{k:'w',dt:'magico',n:'Onda Musical',d:'Fere inimigos próximos continuamente'},
  bolt:{k:'w',dt:'eletrico',n:'Relâmpago',d:'Raios caem em inimigos aleatórios'},
  axe:{k:'w',dt:'fisico',n:'Machado',d:'Machados arremessados para cima que perfuram tudo'},
+ scythe:{k:'w',dt:'fisico',n:'Foice',d:'Uma foice gira ao redor de você e depois entra em recarga'},
+ chakram:{k:'w',dt:'fisico',n:'Chakram',d:'Arremessado no inimigo mais próximo, atravessa tudo e volta para você causando metade do dano'},
+ venom:{k:'w',dt:'magico',n:'Grimório Venenoso',d:'Dispara uma nuvem tóxica que envenena o inimigo mais próximo (dano por segundo). Ignora inimigos já envenenados'},
  might:{k:'p',n:'Força',d:'+15% de dano'},
  speed:{k:'p',n:'Agilidade',d:'+10% velocidade de movimento'},
  hp:{k:'p',n:'Coração',d:'+25 vida máxima'},
  haste:{k:'p',n:'Pressa',d:'-8% recarga das armas'},
  area:{k:'p',n:'Alcance',d:'+12% área e tamanho dos ataques'},
  magnet:{k:'p',n:'Atração',d:'+30% alcance de coleta'},
+ armor:{k:'p',n:'Armadura',d:'-1 de dano sofrido por golpe (mínimo 1)'},
  regen:{k:'p',n:'Regeneração',d:'+0.6 vida por segundo'},
  growth:{k:'p',n:'Crescimento',d:'+10% XP ganho'},
  dur:{k:'p',n:'Duração',d:'+15% de duração dos efeitos das armas (ex: Orbes)'},
@@ -26,8 +30,14 @@ const OB={t0:{x:4,y:51,w:39,h:46,ax:19,ay:40,cr:12,co:6},t1:{x:52,y:51,w:39,h:46
  r0:{x:126,y:127,w:34,h:32,ax:17,ay:30,cr:22,co:14},r1:{x:143,y:110,w:16,h:17,ax:8,ay:15,cr:11,co:9},r2:{x:128,y:112,w:15,h:14,ax:7,ay:12,cr:10,co:8},r3:{x:128,y:97,w:15,h:13,ax:7,ay:11,cr:10,co:8}};
 const DC=[{x:49,y:4,w:7,h:3},{x:70,y:4,w:7,h:5},{x:58,y:10,w:5,h:3},{x:26,y:146,w:4,h:3},{x:8,y:167,w:4,h:3},{x:8,y:183,w:4,h:3}];
 const HC={fisico:['#ffffff','#cfd8dc','#ffcc80'],magico:['#e0b3ff','#b57bff','#ffffff'],eletrico:['#fff59d','#ffeb3b','#ffffff']};
-const VERSION='3.1.2';
+const VERSION='3.5.0';
+const VP=Array.from({length:8},(_,i)=>'Assets/armas/Sprite speels/Chemical Smoke/PNG/Chemical Smoke_Frame_'+String(i+1).padStart(2,'0')+'.png'),VE=Array.from({length:12},(_,i)=>'Assets/armas/Sprite speels/Poisonous Smoke/PNG/Posionous Smoke_Frame_'+String(i+1).padStart(2,'0')+'.png');
 const PATCHES=[
+ {v:'3.5.0',d:'14/11/2026',n:['Novo mapa: Modo de Teste, para testar armas e passivos. Sem cenário e sem spawn de inimigos, com um de cada inimigo do jogo em linha (imóveis e com vida infinita). Nele, E abre a lista de todas as armas e passivos (clique: +1 nível, botão direito: -1 nível) e R reseta o mapa e o personagem.']},
+ {v:'3.4.0',d:'14/11/2026',n:['Nova arma: Grimório Venenoso (dano mágico). Dispara uma nuvem tóxica no inimigo mais próximo: o projétil causa pouquíssimo dano, mas o inimigo atingido fica envenenado e perde vida a cada segundo. A arma ignora inimigos que já estão envenenados e mira em outros.']},
+ {v:'3.3.1',d:'14/11/2026',n:['Novo passivo: Armadura. Cada nível reduz em 1 o dano que você sofre por golpe (nunca abaixo de 1), até o nível 5.']},
+ {v:'3.3.0',d:'14/11/2026',n:['Nova arma: Chakram (dano físico). Ele é arremessado no inimigo mais próximo, atravessa todos no caminho, percorre sempre a mesma distância e volta para você causando metade do dano.','A Foice agora usa um sprite novo, gira no sentido anti-horário e, no nível 5, vira um projétil que gira sobre o próprio eixo.','As opções ao subir de nível agora são sorteadas de forma realmente igual para todas as armas e passivos.']},
+ {v:'3.2.0',d:'14/11/2026',n:['Nova arma: Foice (dano físico). Ela gira em volta de você, acerta os inimigos no caminho e depois entra em recarga.']},
  {v:'3.1.2',d:'14/11/2026',n:['A Cidadela agora tem música própria.','A barra de vida do Mr.WorldWide agora tem o mesmo tamanho da do Merlin.','Cidadela: casas com novos sprites e hitbox ajustada ao tamanho de cada casa, e mais lixo espalhado pelo mapa.','Mr.WorldWide foi bloqueado novamente para todos. Ao chegar perto dele nascem 5 bosses, e ele só é desbloqueado depois de derrotar todos.','A Aura Sombria agora se chama Onda Musical, causa mais dano e é a arma inicial do Mr.WorldWide.']},
  {v:'3.1.1',d:'12/11/2026',n:['O sprite do Mr.WorldWide agora tem o mesmo tamanho do Merlin.','Mr.WorldWide só aparece na Cidadela entre 1200 e 2600 unidades de distância do ponto inicial (nem colado, nem longe demais).','O mapa aberto (J) ficou bem maior: agora mostra uma área de 256x256 quadrados (antes 128x128).']},
  {v:'3.1.0',d:'12/11/2026',n:['Dificuldade muito maior: a vida dos inimigos agora é multiplicada por 3 a cada 10 minutos (10, 20 e 30 min), o dano e a velocidade crescem com o tempo e os inimigos nascem mais rápido.','Depois de 30 minutos só nascem bosses (no máximo 14 ao mesmo tempo).','Gemas de XP: ao chegar a 100 gemas de um mesmo tipo no chão, elas se fundem em uma única gema maior de cor diferente (laranja, dourada ou prateada), mantendo a soma exata do XP.']},
@@ -49,7 +59,7 @@ const PATCHES=[
 let VOL={m:35,s:50};
 let MOB=false;
 const JOY={on:false,x:0,y:0,ox:0,oy:0,kx:0,ky:0,R:56,seen:false,id:null};
-const MAPS={floresta:{name:'Floresta',desc:'Lagos, árvores e pedras. O mapa clássico.'},cidadela:{name:'Cidadela',desc:'Cidade em ruínas tomada por zumbis: quarteirões com prédios, muros e cercas.'}};
+const MAPS={floresta:{name:'Floresta',desc:'Lagos, árvores e pedras. O mapa clássico.'},cidadela:{name:'Cidadela',desc:'Cidade em ruínas tomada por zumbis: quarteirões com prédios, muros e cercas.'},teste:{name:'Modo de Teste',desc:'Sem cenário e sem inimigos nascendo. Um de cada inimigo, imóveis e com vida infinita. E: escolher armas e passivos. R: resetar.'}};
 const ATL={};
 const ATLU={"bg": SPR_7, "rf": SPR_8, "bw": SPR_9, "wf": SPR_10, "gb": SPR_11};
 const GR=[[2,0],[0,0],[0,2],[2,2]],ASP=[[1,10],[1,11],[0,8]],SW=[[8,0],[10,0],[8,2]],GBC=[[0,0],[3,0],[1,0],[2,1],[3,1],[0,1]];
