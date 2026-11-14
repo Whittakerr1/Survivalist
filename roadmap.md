@@ -1,15 +1,15 @@
 # ROADMAP - Survivors
 
 ## Objetivo Atual (Refatoracao e Assets)
-- [ ] **Modularizar o codigo no GitHub:** Codigo modularizado localmente (`index.html`, `style.css`, `data.js`, `sprites.js`, `game.js`) e testado. Falta apenas enviar os arquivos ao GitHub (git add/commit/push).
-- [ ] **Sincronizar e aplicar tilesets de mapas:** Ler os sprites locais em `/home/whittaker/Games/Survivors/Assets/mapas/`, enviar para a pasta `Assets/mapas/` no repositorio do GitHub e atualizar os dois mapas do jogo para usar esses arquivos locais em vez de geracao/Base64.
+- [x] **Modularizar o codigo no GitHub:** modularizado localmente, testado e enviado ao GitHub (verificado).
 
 ## Proximas Funcionalidades
 - [ ] [Mecanica 1]: Breve descricao.
 - [ ] [Mecanica 2]: Breve descricao.
 
 ## Em Andamento
-- [ ] Enviar a versao modular ao GitHub (push local).
+- [ ] Tilesets Cidadela: baus quebraveis ja usam `sprite_0039/0043/0040/0045.png` (variacao aleatoria, `CIDB` em data.js, `cityBox` em game.js). Falta testar no navegador. Cenario (chao, calcada, predios, muros, cercas, lixo) aguardando o mapeamento arquivo -> elemento.
+- [ ] Proxima: mover Base64 pequeno que sobrou (ATLU e ZU em data.js; personagens, icones, tileset em game.js) para sprites.js (baixar o limite de 20 KB do extract_assets.py).
 
 ## Bugs e Correcoes
 - [ ] Descricao do erro.
