@@ -1,8 +1,8 @@
 # ROADMAP - Survivors
 
 ## Objetivo Atual
-- [ ] Utilize a seguinte musica para o mapa da cidadela Assets/Musicas/Cidadela.mp3
-- [ ] alterar os sprites do mr.worldwide para os sprites na pasta Assets/Personagens/Personagens Atuais/mrworldwide/
+- [x] Utilize a seguinte musica para o mapa da cidadela Assets/Musicas/Cidadela.mp3
+- [ ] alterar os sprites do mr.worldwide para os sprites na pasta Assets/Personagens/Personagens Atuais/mrworldwide/ (revertido: sprite antigo restaurado; óculos e pés sumiam no novo)
 - [ ] 
 
 ## Proximas Funcionalidades
@@ -19,7 +19,7 @@
 - [ ] 
 
 ## Bugs e Correcoes
-- [ ] Fazer a barra de vida ter o mesmo tamanho para todos os personagens pois a do mr.worldwide está mt pequena, copie a do merlin.
+- [x] Fazer a barra de vida ter o mesmo tamanho para todos os personagens pois a do mr.worldwide está mt pequena, copie a do merlin.
 - [ ] 
 - [ ] 
 - [ ] 

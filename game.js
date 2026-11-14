@@ -58,6 +58,7 @@ function icon(k,x,y,fb,r,sz){const I=IC[k];if(I.ok){cx.imageSmoothingEnabled=fal
 const CS={wood:{img:new Image(),ok:false},gold:{img:new Image(),ok:false}};
 for(const k in CS){CS[k].img.onload=()=>{CS[k].ok=true}}
 CS.wood.img.src=SPR_36;CS.gold.img.src=SPR_37;
+const HB=CIDH.map(s=>{const o={img:new Image(),ok:false};o.img.onload=()=>{o.ok=true};o.img.src=s;return o});
 const CB=CIDB.map(s=>{const o={img:new Image(),ok:false};o.img.onload=()=>{o.ok=true};o.img.src=s;return o});
 function cityBox(b){const o=CB[b.v||0];if(!o||!o.ok){chestSpr('wood',b.x,b.y,'#8d6e3f',24,24);return}const w=o.img.naturalWidth,h=o.img.naturalHeight,k=Math.min(2,36/w,34/h);cx.imageSmoothingEnabled=false;cx.drawImage(o.img,Math.round(b.x-w*k/2),Math.round(b.y-h*k/2),Math.round(w*k),Math.round(h*k))}
 function chestSpr(k,x,y,fb,w,h){const C=CS[k];if(C.ok){cx.imageSmoothingEnabled=false;cx.drawImage(C.img,(Math.floor(G.t*4)%3)*18,0,18,17,Math.round(x-18),Math.round(y-17),36,34)}else{cx.fillStyle=fb;cx.fillRect(x-w/2,y-h/2,w,h)}}
@@ -115,9 +116,9 @@ const KS={img:new Image(),ok:false};KS.img.onload=()=>{KS.ok=true};KS.img.src='d
 function knifeSpr(q){const k=2*q.r/5;cx.save();cx.translate(q.x,q.y);cx.rotate(Math.atan2(q.vy,q.vx)+Math.PI/4);cx.imageSmoothingEnabled=false;
  cx.drawImage(KS.img,-8*k,-8*k,16*k,16*k);cx.restore()}
 // ---------- musica (toca somente durante a run; webm/opus com fallback mp3; tecla M = mudo) ----------
-const MUS=new Audio(new Audio().canPlayType('audio/webm; codecs=opus')?SPR_1:SPR_2);
-MUS.loop=true;MUS.volume=.35;
-function musicOn(){try{MUS.currentTime=0;const p=MUS.play();if(p&&p.catch)p.catch(()=>{})}catch(e){}}
+const MUSF=new Audio(new Audio().canPlayType('audio/webm; codecs=opus')?SPR_1:SPR_2),MUSC=new Audio('Assets/Musicas/Cidadela.mp3');let MUS=MUSF;
+MUSF.loop=MUSC.loop=true;MUSF.volume=MUSC.volume=.35;
+function musicOn(){try{const o=MUS;o.pause();MUS=curMap==='cidadela'?MUSC:MUSF;MUS.muted=o.muted;MUS.volume=Math.min(1,VOL.m/100);MUS.currentTime=0;const p=MUS.play();if(p&&p.catch)p.catch(()=>{})}catch(e){}}
 function musicOff(){try{MUS.pause()}catch(e){}}
 // ---------- sprite do Machado (26x29; gira enquanto voa) e som de level up ----------
 const AS={img:new Image(),ok:false};AS.img.onload=()=>{AS.ok=true};AS.img.src=SPR_42;
@@ -162,7 +163,7 @@ function drawJoy(){if(!MOB&&!JOY.seen)return;cx.save();const bx=JOY.on?JOY.ox:90
  cx.strokeStyle='#fff';cx.fillStyle='#fff';cx.lineWidth=3;cx.globalAlpha=JOY.on?.5:.2;cx.beginPath();cx.arc(bx,by,JOY.R,0,6.283);cx.stroke();
  cx.globalAlpha=JOY.on?.6:.25;cx.beginPath();cx.arc(bx+(JOY.on?JOY.kx:0),by+(JOY.on?JOY.ky:0),JOY.R*.45,0,6.283);cx.fill();cx.restore()}
 // ---------- barra de vida minimalista (fica sempre embaixo do personagem) ----------
-function drawHp(p){const C=CHARS[curChar],s=Math.max(.5,Math.max(1,Math.round(PX*Z*DPR))*(C.sc||1)),u=Math.max(1,Math.round(s/2)),iw=30*u,ih=3*u,fw=Math.round(iw*Math.max(0,p.hp)/p.mhp),
+function drawHp(p){const C=CHARS[curChar],s=Math.max(.5,Math.max(1,Math.round(PX*Z*DPR))*(C.sc||1)),u=Math.max(1,Math.round(Math.max(1,Math.round(PX*Z*DPR))/2)),iw=30*u,ih=3*u,fw=Math.round(iw*Math.max(0,p.hp)/p.mhp),
  x=Math.round(W*DPR/2-iw/2-u),y=Math.round(H*DPR/2+(C.by-C.ay)*s+2*s);
  cx.save();cx.setTransform(1,0,0,1,0,0);
  cx.fillStyle='#120d1f';cx.fillRect(x,y,iw+2*u,ih+2*u);
@@ -174,26 +175,27 @@ let curMap='floresta';
 const CY=new Map(),LOTS=new Map(),BSP=new Map();
 ['bg','rf','bw','wf','gb'].forEach(k=>{ATL[k]={img:new Image(),ok:false};ATL[k].img.onload=()=>{ATL[k].ok=true}});
 for(const k in ATLU)ATL[k].img.src=ATLU[k];
+const bv=(bx,by,i)=>Math.floor(hsh(bx,by,300+i)*HB.length),bh=(v,w)=>{const o=HB[v],a=o&&o.ok?o.img.naturalHeight/o.img.naturalWidth:1.1;return Math.max(3,Math.min(9,Math.round(w*a*.9)))};
 function lotOf(bx,by){const key=bx+','+by;let L=LOTS.get(key);if(L)return L;
  const r=i=>hsh(bx,by,40+i),home=bx===0&&by===0,h=r(0);
  L={t:home?'E':h<.3?'A':h<.45?'B':h<.65?'C':h<.8?'D':'E',bl:[],gap:null,ring:false,tr:new Set(),path:new Set()};
- if(L.t==='A'){const w=6+Math.floor(r(1)*5),hh=5+Math.floor(r(2)*3);L.bl.push({x:1+Math.floor(r(3)*(13-w)),y:1+Math.floor(r(4)*(12-hh)),w,h:hh,s:r(5)<.5?0:1})}
- if(L.t==='B'){const w1=4+Math.floor(r(1)*2),w2=4+Math.floor(r(2)*2),h1=4+Math.floor(r(3)*3),h2=4+Math.floor(r(4)*3);
-  L.bl.push({x:1,y:1+Math.floor(r(5)*(12-h1)),w:w1,h:h1,s:r(6)<.5?0:1},{x:13-w2,y:1+Math.floor(r(7)*(12-h2)),w:w2,h:h2,s:r(8)<.5?0:1})}
+ if(L.t==='A'){const w=6+Math.floor(r(1)*5),v=bv(bx,by,0),hh=bh(v,w);L.bl.push({x:1+Math.floor(r(3)*(13-w)),y:1+Math.floor(r(4)*(12-hh)),w,h:hh,s:r(5)<.5?0:1,v})}
+ if(L.t==='B'){const w1=4+Math.floor(r(1)*2),w2=4+Math.floor(r(2)*2),v1=bv(bx,by,0),v2=bv(bx,by,1),h1=bh(v1,w1),h2=bh(v2,w2);
+  L.bl.push({x:1,y:1+Math.floor(r(5)*(12-h1)),w:w1,h:h1,s:r(6)<.5?0:1,v:v1},{x:13-w2,y:1+Math.floor(r(7)*(12-h2)),w:w2,h:h2,s:r(8)<.5?0:1,v:v2})}
  if(L.t==='C'||L.t==='D'){L.ring=true;L.gap={side:L.t==='D'?2:Math.floor(r(1)*4),p:4+Math.floor(r(2)*4)}}
- if(L.t==='D')L.bl.push({x:4,y:3,w:6,h:5,s:r(3)<.5?0:1});
+ if(L.t==='D'){const v=bv(bx,by,0);L.bl.push({x:4,y:3,w:6,h:bh(v,6),s:r(3)<.5?0:1,v})}
  for(const b of L.bl){const dx=b.x+Math.floor(b.w/2);for(let y=b.y+b.h;y<=12;y++)L.path.add(dx+','+y)}
- const lo=L.ring?2:1,hi=L.ring?11:12,cnt=home?0:L.t==='C'?4+Math.floor(r(9)*5):L.t==='D'?2+Math.floor(r(9)*3):L.t==='E'?2+Math.floor(r(9)*4):1+Math.floor(r(9)*3);
+ const lo=L.ring?2:1,hi=L.ring?11:12,cnt=home?0:L.t==='C'?8+Math.floor(r(9)*9):L.t==='D'?5+Math.floor(r(9)*5):L.t==='E'?5+Math.floor(r(9)*6):4+Math.floor(r(9)*5);
  const inB=(x,y)=>L.bl.some(b=>x>=b.x-1&&x<b.x+b.w+1&&y>=b.y-1&&y<b.y+b.h+1);
  const inCor=(x,y)=>{if(!L.gap)return false;const g=L.gap,qx=x>=g.p-1&&x<=g.p+2,qy=y>=g.p-1&&y<=g.p+2;return g.side===0?(qx&&y<=6):g.side===2?(qx&&y>=7):g.side===1?(qy&&x>=7):(qy&&x<=6)};
  for(let k=0;k<cnt*5&&L.tr.size<cnt;k++){const x=lo+Math.floor(hsh(bx,by,200+k*2)*(hi-lo+1)),y=lo+Math.floor(hsh(bx,by,201+k*2)*(hi-lo+1));
   if(!inB(x,y)&&!inCor(x,y)&&!L.path.has(x+','+y))L.tr.add(x+','+y)}
  LOTS.set(key,L);return L}
-function bldOf(bx,by,i,b){const key=bx+','+by+','+i;let o=BSP.get(key);if(!o){o={x0:bx*18-6+b.x,y0:by*18-6+b.y,w:b.w,h:b.h,s:b.s};BSP.set(key,o)}return o}
+function bldOf(bx,by,i,b){const key=bx+','+by+','+i;let o=BSP.get(key);if(!o){o={x0:bx*18-6+b.x,y0:by*18-6+b.y,w:b.w,h:b.h,s:b.s,v:b.v};BSP.set(key,o)}return o}
 function TY(tx,ty){const k=(tx+32768)*65536+(ty+32768);let t=CY.get(k);if(t)return t;if(CY.size>80000)CY.clear();
  const X=tx+6,Y=ty+6,bx=Math.floor(X/18),by=Math.floor(Y/18),lx=X-bx*18,ly=Y-by*18,hv=hsh(tx,ty,3);
  t={k:'g',w:false,g:Math.floor(hv*4),top:null,bd:null,lx,ly};
- if(lx>=14||ly>=14){t.k='r';t.g=Math.floor(hv*3)}
+ if(lx>=14||ly>=14){t.k='r';t.g=Math.floor(hv*3);if(hsh(tx,ty,23)<.06&&(Math.abs(tx)>5||Math.abs(ty)>5)){t.w=true;t.top={a:'gb',c:GBC[Math.floor(hsh(tx,ty,9)*GBC.length)]}}}
  else if(lx===0||lx===13||ly===0||ly===13){t.k='s';t.g=Math.floor(hv*3)}
  else{const L=lotOf(bx,by),key=lx+','+ly;if(L.t==='E')t.k='a';
   let bi=-1;for(let i=0;i<L.bl.length;i++){const b=L.bl[i];if(lx>=b.x&&lx<b.x+b.w&&ly>=b.y&&ly<b.y+b.h){bi=i;break}}
@@ -216,7 +218,7 @@ function drawCity(){const p=G.p,x0=Math.floor((p.x-W/2/Z)/TS)-1,x1=Math.ceil((p.
   if(t.top)cellAt(t.top.a,t.top.c,x,y);
   if(t.k==='r'){cx.fillStyle='#d8d2a8';if(t.ly===15&&t.lx<14&&(tx&1))cx.fillRect(x,y+TS-2,TS,3);if(t.lx===15&&t.ly<14&&(ty&1))cx.fillRect(x+TS-2,y,3,TS)}
   if(t.bd)seen.add(t.bd)}
- for(const b of seen){const sp=bdSprite(b);if(sp){cx.imageSmoothingEnabled=false;cx.drawImage(sp,b.x0*TS,b.y0*TS,b.w*TS,b.h*TS)}}}
+ for(const b of seen){const o=HB[b.v||0];if(o&&o.ok){const iw=o.img.naturalWidth,ih=o.img.naturalHeight,k=b.w*TS/iw,dw=iw*k,dh=ih*k;cx.imageSmoothingEnabled=true;cx.drawImage(o.img,Math.round(b.x0*TS+(b.w*TS-dw)/2),Math.round((b.y0+b.h)*TS-dh),Math.round(dw),Math.round(dh));cx.imageSmoothingEnabled=false;continue}const sp=bdSprite(b);if(sp){cx.imageSmoothingEnabled=false;cx.drawImage(sp,b.x0*TS,b.y0*TS,b.w*TS,b.h*TS)}}}
 // zumbis (sprites de caminhada; so os 4 sentidos)
 for(const kd in ZU){ZS[kd]={};for(const d in ZU[kd]){const o={img:new Image(),ok:false};o.img.onload=()=>{o.ok=true};o.img.src=ZU[kd][d];ZS[kd][d]=o}}
 function zombieSpr(e,tint){const kd=e.boss?'axe':e.r>10?'big':'small',a=Math.atan2(G.p.y-e.y,G.p.x-e.x),cs=Math.cos(a),sn=Math.sin(a),d=Math.abs(cs)>Math.abs(sn)?(cs>0?'right':'left'):(sn>0?'down':'up'),o=ZS[kd][d];
@@ -345,7 +347,7 @@ function update(dt){const p=G.p,m=mul();G.t+=dt;
  const ar=(45+13*L('aura'))*m.area*m.g.a;
  G.B.forEach(b=>{if(L('aura')&&Math.hypot(b.x-p.x,b.y-p.y)<ar+14)b.hp-=8*dt*m.dmg;
   if(L('orb')&&G.orbOn){const r=75*m.area,nn=L('orb')+1+m.g.n;for(let i=0;i<nn;i++){const a=G.orbA+i*6.283/nn;if(Math.hypot(b.x-(p.x+Math.cos(a)*r),b.y-(p.y+Math.sin(a)*r))<22)b.hp-=30*dt}}
-  if(b.hp<=0&&!b.done){b.done=1;const n=Math.random()<.45?(Math.random()<.2?2:1):0;for(let i=0;i<n;i++)G.C.push({x:b.x+(Math.random()-.5)*20,y:b.y+(Math.random()-.5)*20});if(Math.random()<.2){const r=Math.random();(G.IT||(G.IT=[])).push({x:b.x,y:b.y,k:r<.5?'heart':r<.57?'nuke':r<.6?'magnet':'root'})}}});
+  if(b.hp<=0&&!b.done){b.done=1;const n=Math.random()<.45?(Math.random()<.2?2:1):0;for(let i=0;i<n;i++)G.C.push({x:b.x+(Math.random()-.5)*20,y:b.y+(Math.random()-.5)*20});if(Math.random()<.2){const r=Math.random(),lk=.05+.05*ml('luck')+.05*L('luck');(G.IT||(G.IT=[])).push({x:b.x,y:b.y,k:r<.5?'heart':r<.57?'nuke':r<.57+.1*(1+lk)?'magnet':'root'})}}});
  G.B=G.B.filter(b=>!b.done);
  // inimigos
  G.E.forEach(e=>{const a=Math.atan2(p.y-e.y,p.x-e.x);if(e.st>0)e.st-=dt;else if(e.rt>0)e.rt-=dt;else mvE(e,Math.cos(a)*e.sp*dt,Math.sin(a)*e.sp*dt,e.r*.6);e.vul-=dt;e.fl-=dt;
