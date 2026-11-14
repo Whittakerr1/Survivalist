@@ -1,18 +1,29 @@
 # ROADMAP - Survivors
 
-## Objetivo Atual (Refatoracao e Assets)
-- [x] **Modularizar o codigo no GitHub:** modularizado localmente, testado e enviado ao GitHub (verificado).
+## Objetivo Atual
+- [ ] Utilize a seguinte musica para o mapa da cidadela Assets/Musicas/Cidadela.mp3
+- [ ] alterar os sprites do mr.worldwide para os sprites na pasta Assets/Personagens/Personagens Atuais/mrworldwide/
+- [ ] 
 
 ## Proximas Funcionalidades
 - [ ] [Mecanica 1]: Breve descricao.
 - [ ] [Mecanica 2]: Breve descricao.
+- [ ] 
+- [ ] 
+- [ ] 
 
 ## Em Andamento
-- [ ] Tilesets Cidadela: baus quebraveis ja usam `sprite_0039/0043/0040/0045.png` (variacao aleatoria, `CIDB` em data.js, `cityBox` em game.js). Falta testar no navegador. Cenario (chao, calcada, predios, muros, cercas, lixo) aguardando o mapeamento arquivo -> elemento.
-- [ ] Proxima: mover Base64 pequeno que sobrou (ATLU e ZU em data.js; personagens, icones, tileset em game.js) para sprites.js (baixar o limite de 20 KB do extract_assets.py).
+- [ ] 
+- [ ] 
+- [ ] 
+- [ ] 
 
 ## Bugs e Correcoes
-- [ ] Descricao do erro.
+- [ ] Fazer a barra de vida ter o mesmo tamanho para todos os personagens pois a do mr.worldwide está mt pequena, copie a do merlin.
+- [ ] 
+- [ ] 
+- [ ] 
+- [ ] 
 
 ## Concluido
 - [x] Configuracao de ambiente e MCPs (Filesystem e GitHub).
