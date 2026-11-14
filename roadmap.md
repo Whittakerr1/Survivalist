@@ -1,16 +1,19 @@
 # ROADMAP - Survivors
 
 ## Objetivo Atual
-- [x] Utilize a seguinte musica para o mapa da cidadela Assets/Musicas/Cidadela.mp3
-- [ ] alterar os sprites do mr.worldwide para os sprites na pasta Assets/Personagens/Personagens Atuais/mrworldwide/ (revertido: sprite antigo restaurado; óculos e pés sumiam no novo)
+- [x] alterar o tipo de dano das orbes giratórias para eletrico
+- [x] Destaque os bosses que nascem quando o player se aproxima do mr.worldwide
+- [x] Adicione um item passivo que aumenta o numero de projeteis e ele só tem 2 niveis e cada nivel aumenta 1 projetil
+- [x] faça com que melhorias de duração aumente a duração que o veneno do grimorio venenoso fica no inimigo
+- [x] adicionar um item que drop dos itens quebraveis chamado coroa da fortuna, quando o player pegar esse item inicia o modo "quem quer dinheiro", nesse modo os inimigos terão 70% de chance de dropar moedas, e esse modo por padrão dura 10 segundos mas aumenta o tempo a cada inimigo morto em até no maximo 20 segundos e cada vez fica mais dificil de aumentar o tempo
+- [x] Durante o modo "Quem quer dinheiro" deixe escrito no centro da tela piscando em vermelho "QUEM QUER DINHEIRO" e o tempo que falta para acabar
+- [x] pode esconder sobre o modo quem quer dinheiro nos patch notes pois ele é pra ser um item meio raro na mesma raridade do item que mata todos os inimigos na tela
+- [x] Adicione uma nova arma de dano de raio, o nome é escudo de energia, o sprite fica por cima do sprite do player quando está ativo, ele absorve um ataque inimigo e retorna dano eletrico para o inimigo que atacou o player enquanto o escudo estivesse ativo, a cada nivel aumenta o dano que o escudo devolve e a quantidade de cargas do escudo, o escudo está sempre recarregando quando o tempo de recarga acaba o escudo ganha uma carga, e no maximo +1 carga por nivel até um maximo de 5 cargas. aqui estão os sprites para o escudo Assets/armas/Legacy Collection/Assets/Explosions and Magic/Grotto-escape-2-FX/sprites/slash-upward/
+- [x] adicione a função de numero de dano, cada ataque que acertar um inimigo deve aparecer a quantidade de dano que foi dada, adicione nas opções uma opção de desativar o contador de dano. no modo treino adicione um contador de DPS.
+- [ ] 
 - [ ] 
 
-## Proximas Funcionalidades
-- [ ] [Mecanica 1]: Breve descricao.
-- [ ] [Mecanica 2]: Breve descricao.
-- [ ] 
-- [ ] 
-- [ ] 
+
 
 ## Em Andamento
 - [ ] 
@@ -19,12 +22,14 @@
 - [ ] 
 
 ## Bugs e Correcoes
-- [x] Fazer a barra de vida ter o mesmo tamanho para todos os personagens pois a do mr.worldwide está mt pequena, copie a do merlin.
-- [ ] 
+
+- [x] diminua o escalonamento de velocidade dos inimigos
 - [ ] 
 - [ ] 
 - [ ] 
 
 ## Concluido
-- [x] Configuracao de ambiente e MCPs (Filesystem e GitHub).
-- [x] Modularizacao local: `style.css`, `sprites.js` (7 strings Base64, ~2,9 MB), `data.js` (23 constantes) e `game.js` (~115 KB). Jogo testado e funcionando. Backups: `index.backup.html`, `game.backup.js`. Scripts usados: `split_game.py`, `extract_assets.py`.
+- [ ] 
+- [ ] 
+- [ ] 
+- [ ] 

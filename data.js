@@ -3,13 +3,15 @@ const MAXL=5;
 const ITEMS={
  wand:{k:'w',dt:'magico',n:'Varinha Mágica',d:'Dispara projéteis no inimigo mais próximo'},
  knife:{k:'w',dt:'fisico',n:'Facas',d:'Facas rápidas que miram no inimigo mais próximo'},
- orb:{k:'w',dt:'magico',n:'Orbes Giratórios',d:'Orbes orbitam ao redor de você por um tempo, somem e voltam'},
+ orb:{k:'w',dt:'eletrico',n:'Orbes Giratórios',d:'Orbes orbitam ao redor de você por um tempo, somem e voltam'},
  aura:{k:'w',dt:'magico',n:'Onda Musical',d:'Fere inimigos próximos continuamente'},
  bolt:{k:'w',dt:'eletrico',n:'Relâmpago',d:'Raios caem em inimigos aleatórios'},
  axe:{k:'w',dt:'fisico',n:'Machado',d:'Machados arremessados para cima que perfuram tudo'},
  scythe:{k:'w',dt:'fisico',n:'Foice',d:'Uma foice gira ao redor de você e depois entra em recarga'},
  chakram:{k:'w',dt:'fisico',n:'Chakram',d:'Arremessado no inimigo mais próximo, atravessa tudo e volta para você causando metade do dano'},
  venom:{k:'w',dt:'magico',n:'Grimório Venenoso',d:'Dispara uma nuvem tóxica que envenena o inimigo mais próximo (dano por segundo). Ignora inimigos já envenenados'},
+ shield:{k:'w',dt:'eletrico',n:'Escudo de Energia',d:'Um escudo absorve um ataque inimigo e devolve dano elétrico a quem atacou. Ganha cargas com o tempo'},
+ fireball:{k:'w',dt:'magico',n:'Fireball',d:'Dispara uma bola de fogo que queima o inimigo: causa dano por segundo e, a cada tique, o alvo para de se mover por instantes'},
  might:{k:'p',n:'Força',d:'+15% de dano'},
  speed:{k:'p',n:'Agilidade',d:'+10% velocidade de movimento'},
  hp:{k:'p',n:'Coração',d:'+25 vida máxima'},
@@ -19,10 +21,11 @@ const ITEMS={
  armor:{k:'p',n:'Armadura',d:'-1 de dano sofrido por golpe (mínimo 1)'},
  regen:{k:'p',n:'Regeneração',d:'+0.6 vida por segundo'},
  growth:{k:'p',n:'Crescimento',d:'+10% XP ganho'},
- dur:{k:'p',n:'Duração',d:'+15% de duração dos efeitos das armas (ex: Orbes)'},
+ dur:{k:'p',n:'Duração',d:'+15% de duração dos efeitos das armas (ex: Orbes e veneno do Grimório Venenoso)'},
  steel:{k:'p',dt:'fisico',n:'Fúria de Aço',d:'Aprimora todas as armas de dano físico'},
  tome:{k:'p',dt:'magico',n:'Grimório Arcano',d:'Aprimora todas as armas de dano mágico'},
- dynamo:{k:'p',dt:'eletrico',n:'Dínamo Tempestuoso',d:'Aprimora todas as armas de dano elétrico'}};
+ dynamo:{k:'p',dt:'eletrico',n:'Dínamo Tempestuoso',d:'Aprimora todas as armas de dano elétrico'},
+ multi:{k:'p',mx:2,n:'Disparo Múltiplo',d:'+1 projétil em todas as armas (máx. nível 2)'}};
 const PX=2;
 const IC={};
 let SEED=0,OL=[];
@@ -30,9 +33,14 @@ const OB={t0:{x:4,y:51,w:39,h:46,ax:19,ay:40,cr:12,co:6},t1:{x:52,y:51,w:39,h:46
  r0:{x:126,y:127,w:34,h:32,ax:17,ay:30,cr:22,co:14},r1:{x:143,y:110,w:16,h:17,ax:8,ay:15,cr:11,co:9},r2:{x:128,y:112,w:15,h:14,ax:7,ay:12,cr:10,co:8},r3:{x:128,y:97,w:15,h:13,ax:7,ay:11,cr:10,co:8}};
 const DC=[{x:49,y:4,w:7,h:3},{x:70,y:4,w:7,h:5},{x:58,y:10,w:5,h:3},{x:26,y:146,w:4,h:3},{x:8,y:167,w:4,h:3},{x:8,y:183,w:4,h:3}];
 const HC={fisico:['#ffffff','#cfd8dc','#ffcc80'],magico:['#e0b3ff','#b57bff','#ffffff'],eletrico:['#fff59d','#ffeb3b','#ffffff']};
-const VERSION='3.5.0';
+const VERSION='3.8.0';
+const SLT=[{k:'slime',t0:0,h:1.5,s:1,r:11,d:1,w:4,xk:0},{k:'poison',t0:0,h:2.5,s:.95,r:12,d:1.1,w:3,xk:0},{k:'ice',t0:0,h:4,s:.9,r:13,d:1.2,w:3,xk:1},{k:'fire',t0:0,h:6,s:1.05,r:13,d:1.4,w:2,xk:1},{k:'king',t0:0,h:40,s:.7,r:22,d:2.5,w:.3,xk:2,max:3}];
+const SLB='Assets/Inimigos/Slimes/',SLD={slime:'slime',poison:'poison-slime',ice:'ice-slime',fire:'fire-slime',king:'slime-king'};
 const VP=Array.from({length:8},(_,i)=>'Assets/armas/Sprite speels/Chemical Smoke/PNG/Chemical Smoke_Frame_'+String(i+1).padStart(2,'0')+'.png'),VE=Array.from({length:12},(_,i)=>'Assets/armas/Sprite speels/Poisonous Smoke/PNG/Posionous Smoke_Frame_'+String(i+1).padStart(2,'0')+'.png');
 const PATCHES=[
+ {v:'3.8.0',d:'14/11/2026',n:['Nova arma: Fireball (dano mágico). Dispara uma bola de fogo que queima o inimigo: ele perde vida por segundo (menos que o veneno) e, a cada tique de dano, fica parado por 0,3s. Ignora inimigos que já estão queimando e mira em outros.','O Cometa agora tem uma animação gigante de explosão no centro da tela.','A Onda Musical agora empurra levemente os inimigos ao causar dano.','Corrigido o projétil do Grimório Venenoso, que saía torto dependendo da direção.']},
+ {v:'3.7.0',d:'14/11/2026',n:['Novos inimigos: 5 novos tipos de slime (Slime, Venenoso, Gelo, Fogo e Rei Slime), cada um com vida, velocidade e dano próprios, nascendo na Floresta no lugar dos slimes antigos (a quantidade de inimigos não muda). Nenhum deles tem mais vida que um boss.','Rei Slime: um slime grande e resistente que dá muito XP (até 3 ao mesmo tempo).','A música da Floresta agora é Lively City.','No Modo de Teste há uma fileira extra com um de cada novo slime.']},
+ {v:'3.6.0',d:'14/11/2026',n:['Nova arma: Escudo de Energia (dano elétrico). Um escudo aparece sobre o personagem, absorve um ataque inimigo e devolve dano elétrico a quem atacou. Cada nível aumenta o dano devolvido e o máximo de cargas (até 5); o escudo recarrega uma carga de tempos em tempos.','Novo passivo: Disparo Múltiplo. Cada nível (máx. 2) adiciona +1 projétil às armas.','As Orbes Giratórias agora causam dano elétrico e são aprimoradas pelo Dínamo Tempestuoso.','O passivo Duração agora também aumenta o tempo do veneno do Grimório Venenoso.','Os 5 bosses que nascem ao se aproximar do Mr.WorldWide agora ficam destacados com um anel e uma seta dourada.','Números de dano aparecem a cada acerto (dá para desligar em Opções). No Modo de Teste há um contador de DPS.','Os inimigos agora ganham velocidade mais devagar com o passar do tempo.']},
  {v:'3.5.0',d:'14/11/2026',n:['Novo mapa: Modo de Teste, para testar armas e passivos. Sem cenário e sem spawn de inimigos, com um de cada inimigo do jogo em linha (imóveis e com vida infinita). Nele, E abre a lista de todas as armas e passivos (clique: +1 nível, botão direito: -1 nível) e R reseta o mapa e o personagem.']},
  {v:'3.4.0',d:'14/11/2026',n:['Nova arma: Grimório Venenoso (dano mágico). Dispara uma nuvem tóxica no inimigo mais próximo: o projétil causa pouquíssimo dano, mas o inimigo atingido fica envenenado e perde vida a cada segundo. A arma ignora inimigos que já estão envenenados e mira em outros.']},
  {v:'3.3.1',d:'14/11/2026',n:['Novo passivo: Armadura. Cada nível reduz em 1 o dano que você sofre por golpe (nunca abaixo de 1), até o nível 5.']},

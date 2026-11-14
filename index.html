@@ -6,16 +6,17 @@
 <link rel="stylesheet" href="style.css"></head><body>
 <canvas id="c"></canvas>
 <button id="pbtn" aria-label="Pausar">II</button><button id="mapbtn" aria-label="Mapa">MAPA</button>
-<div class="ov on" id="menu"><h1>SURVIVORS <span id="upn">A QUEDA DA CIDADELA</span></h1><div>Moedas: <b id="coins">0</b> 🪙</div>
+<div class="ov on" id="menu"><canvas id="mbg"></canvas><div class="mhud"><div>Moedas: <b id="coins">0</b> 🪙</div>
 <div>Jogador: <b id="who"></b></div>
-<div>Personagem: <b id="chr"></b></div>
+<div>Personagem: <b id="chr"></b></div></div><div class="mlogo"><h1>SURVIVORS</h1><div id="upn">A QUEDA DA CIDADELA</div></div>
 <div id="ver"></div>
-<div class="col"><button id="play" style="font-size:22px;border-color:var(--ac)">▶ Jogar</button><button id="openchars" style="font-size:22px">🧙 Personagens</button><button id="openlb" style="font-size:22px">🏆 Ranking</button><button id="opens" style="font-size:22px">🛒 Melhorias</button><button id="opencdx" style="font-size:22px">📖 Codex</button><button id="opennotes">📜 Novidades <span id="newb"></span></button></div>
+<div class="mcol"><button id="play">▶ JOGAR</button><div class="mgrid"><button id="openchars">🧙 Personagens</button><button id="opens">🛒 Melhorias</button><button id="openlb">🏆 Ranking</button><button id="opencdx">📖 Codex</button></div><button id="opennotes">📜 Novidades <span id="newb"></span></button></div>
 <small id="hint">WASD ou setas para mover, J para o mapa. Ataques são automáticos. Sobreviva!</small></div>
 <div class="ov" id="optm"><h1>Opções</h1><div class="row"><button style="color:var(--ac)">Áudio</button></div>
 <div class="pn" style="display:flex;flex-direction:column;gap:22px;min-width:min(400px,88vw)">
 <label>Música <b id="vmv"></b><input id="vm" type="range" min="0" max="100"></label>
-<label>Efeitos sonoros <b id="vsv"></b><input id="vs" type="range" min="0" max="100"></label></div>
+<label>Efeitos sonoros <b id="vsv"></b><input id="vs" type="range" min="0" max="100"></label>
+<label>Números de dano <input id="dn" type="checkbox"></label></div>
 <button id="optc">← Voltar</button></div>
 <div class="ov" id="mapm"><h1>Escolha o mapa</h1><div class="row" id="maps"></div><button id="mapsb">← Voltar</button></div>
 <div class="ov" id="charm"><h1>Personagens</h1><div class="row" id="chars"></div><button id="charc">← Voltar</button></div>
