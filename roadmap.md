@@ -1,17 +1,24 @@
 # ROADMAP - Survivors
 
 ## Objetivo Atual
-- [x] alterar o tipo de dano das orbes giratórias para eletrico
-- [x] Destaque os bosses que nascem quando o player se aproxima do mr.worldwide
-- [x] Adicione um item passivo que aumenta o numero de projeteis e ele só tem 2 niveis e cada nivel aumenta 1 projetil
-- [x] faça com que melhorias de duração aumente a duração que o veneno do grimorio venenoso fica no inimigo
-- [x] adicionar um item que drop dos itens quebraveis chamado coroa da fortuna, quando o player pegar esse item inicia o modo "quem quer dinheiro", nesse modo os inimigos terão 70% de chance de dropar moedas, e esse modo por padrão dura 10 segundos mas aumenta o tempo a cada inimigo morto em até no maximo 20 segundos e cada vez fica mais dificil de aumentar o tempo
-- [x] Durante o modo "Quem quer dinheiro" deixe escrito no centro da tela piscando em vermelho "QUEM QUER DINHEIRO" e o tempo que falta para acabar
-- [x] pode esconder sobre o modo quem quer dinheiro nos patch notes pois ele é pra ser um item meio raro na mesma raridade do item que mata todos os inimigos na tela
-- [x] Adicione uma nova arma de dano de raio, o nome é escudo de energia, o sprite fica por cima do sprite do player quando está ativo, ele absorve um ataque inimigo e retorna dano eletrico para o inimigo que atacou o player enquanto o escudo estivesse ativo, a cada nivel aumenta o dano que o escudo devolve e a quantidade de cargas do escudo, o escudo está sempre recarregando quando o tempo de recarga acaba o escudo ganha uma carga, e no maximo +1 carga por nivel até um maximo de 5 cargas. aqui estão os sprites para o escudo Assets/armas/Legacy Collection/Assets/Explosions and Magic/Grotto-escape-2-FX/sprites/slash-upward/
-- [x] adicione a função de numero de dano, cada ataque que acertar um inimigo deve aparecer a quantidade de dano que foi dada, adicione nas opções uma opção de desativar o contador de dano. no modo treino adicione um contador de DPS.
-- [ ] 
-- [ ] 
+- [x] faça com que o portal apareça no mapa do J aos 25 minutos independente da distancia
+- [x] troque o nome do item passivo coração para Vida
+- [x] troque o nome do item passivo Pressa para Recarga
+- [x] troque o nome do item passivo alcance para tamanho
+- [x] troque o nome do item passivo atração para coleta
+- [x] troque o nome do item passivo crescimento para XP
+- [x] troque o nome do item passivo Fúria de aço para Berserk
+- [x] troque o nome do item passivo Grimório arcano para Codex arcano
+- [x] troque o nome do item passivo Dínamo tempestuoso para Fúria da tempestade
+- [x] Faça com que do lado do Tipo de item como por exemplo "Arma" apareça o tipo de dano dele com uma cor caracteristica
+- [x] Crie um item passivo chamado Critico ele tem 5 niveis e adiciona chance critica as armas até um maximo de 75% no nivel 5
+- [x] Crie uma arma chamado "tempestari" dispara raios de energia que têm como alvo o inimigo mais próximo. Esta arma não causa dano aumentado em acertos críticos. Em vez disso, ela cria uma explosão centralizada no inimigo atingido, que causa dano a todos os inimigos dentro do seu raio de alcance.
+- [x] Os sprites para a Tempestari estão nessa pasta /Assets/Efeitos/Super Pixel Effects Gigapack (Free Version)/PNG/Lightning/lightning_burst_001/lightning_burst_001_large_violet/  utilize o 0000 e o 0001 para fazer o projetil. e utilize do 0000 até o 0007 para fazer a explosão
+- [x] a onda musical nao causa dano critico
+- [x] crie uma arma eletrica chamada Onda de energia, ela dispara uma linha de feixes de laser perfurantes na direção em que o personagem está olhando, sendo que o ponto de partida dos raios fica um pouco afastado do personagem. A duração afeta o comprimento do feixe de laser e o dano total que ele pode causar.
+Os feixes de laser disparados podem se mover levemente com o personagem, mas apenas enquanto eles estiverem se movendo na mesma direção dos lasers. use esses sprites para faze-la: Assets/Efeitos/Super Pixel Effects Gigapack (Free Version)/PNG/Sci-fi/scifi_heartbeat_fast_001/scifi_heartbeat_fast_001_large_yellow/
+- [x] Crie uma arma magica chamado surto de mana ela emite uma onda de partículas brilhantes para fora no formato de uma elipse vertical, rebatendo pelas bordas de uma coluna vertical centralizada ao redor do personagem. As partículas são posicionadas em relação ao personagem e acompanham o movimento dele. (faça os efeitos usando CSS e Javascipt no estilo do jogo)
+- [x] Crie uma arma de dano fisico chamada Martelo, ela ataca em cone pra frente do player na direção que o player estiver andando, os atributos da arma nao escalam com quantidade nem duração, apenas com dano, critico e recarga, use o sprite 14 Assets/armas/Pack 1/2px/
 
 
 
@@ -23,9 +30,8 @@
 
 ## Bugs e Correcoes
 
-- [x] diminua o escalonamento de velocidade dos inimigos
 - [ ] 
-- [ ] 
+- [ ] quando eu subo o jogo para o github o escudo de energia para de ter sprite
 - [ ] 
 
 ## Concluido
