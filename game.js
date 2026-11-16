@@ -14,16 +14,17 @@ function shop(){$('coins').textContent=$('coins2').textContent=meta.coins;$('sho
 // ---------- sprites (pixel art 16x16; PX = tamanho do pixel no mundo, igual para todos os sprites) ----------
 // ---------- personagens jogaveis (spritesheet 3 colunas x 4 linhas: baixo, esquerda, direita, cima) ----------
 const CHARS={merlin:{name:'Merlin',fw:32,fh:32,ax:16,ay:12,by:21,seq:[1,0,1,2],idle:1,start:'wand',ok:false,img:new Image()},
- mrww:{name:'Mr.WorldWide',fw:32,fh:32,ax:16,ay:16,by:32,seq:[0,1,2,3],idle:0,sc:.5,start:'aura',locked:true,unlock:{map:'cidadela',chance:.4,minD:1200,maxD:2600},hint:'Bloqueado: encontre-o na Cidadela e derrote 5 bosses.',ok:false,img:new Image()}};
+ mrww:{name:'Mr.WorldWide',fw:32,fh:32,ax:16,ay:16,by:32,seq:[0,1,2,3],idle:0,sc:.5,start:'aura',locked:true,unlock:{map:'cidadela',chance:.4,minD:1200,maxD:2600},hint:'Bloqueado: encontre-o na Cidadela e derrote 5 bosses.',ok:false,img:new Image()},
+ erik:{name:'Erik',fw:32,fh:32,ax:16,ay:12,by:21,seq:[1,0,1,2],idle:1,start:'axe',locked:true,hint:'Bloqueado: sobreviva 10 minutos na Floresta.',ok:true,img:new Image()}};
 let curChar='merlin';
 for(const k in CHARS){const C=CHARS[k];C.img.onload=()=>{C.ok=true}}
 CHARS.merlin.img.src=SPR_24;
 CHARS.mrww.img.src=SPR_25;
-// Merlin: quadros individuais (4 por direcao; esquerda = direita espelhada). Altura = altura visivel do sprite antigo (C.th, definida em fitChar)
-const MFR=(()=>{const B='Assets/Personagens/Personagens Atuais/Merlin/',ld=n=>[1,2,3,4].map(i=>{const o=new Image();o.src=encodeURI(B+n+'_0'+i+'.png');return o}),r=ld('direita');return[ld('baixo'),r,r,ld('cima')]})();
-function mDraw(g,row,f,x,bot,h,fl){const o=MFR[row]&&MFR[row][f];if(!o||!o.complete||!o.naturalWidth)return false;const w=o.naturalWidth*h/o.naturalHeight;g.save();g.imageSmoothingEnabled=true;g.imageSmoothingQuality='high';if(fl){g.translate(x,0);g.scale(-1,1);g.drawImage(o,-w/2,bot-h,w,h)}else g.drawImage(o,x-w/2,bot-h,w,h);g.restore();return true}
+// Merlin e Erik: quadros individuais (4 por direcao; esquerda = direita espelhada). Altura = C.th (Merlin: altura visivel do sprite antigo, definida em fitChar)
+const CFR=(()=>{const mk=nm=>{const B='Assets/Personagens/Personagens Atuais/'+nm+'/',ld=n=>[1,2,3,4].map(i=>{const o=new Image();o.src=encodeURI(B+n+'_0'+i+'.png');return o}),r=ld('direita');return[ld('baixo'),r,r,ld('cima')]};return{merlin:mk('Merlin'),erik:mk('Erik')}})();
+function mDraw(g,row,f,x,bot,h,fl,id){const A=CFR[id||'merlin'],o=A&&A[row]&&A[row][f];if(!o||!o.complete||!o.naturalWidth)return false;const w=o.naturalWidth*h/o.naturalHeight;g.save();g.imageSmoothingEnabled=true;g.imageSmoothingQuality='high';if(fl){g.translate(x,0);g.scale(-1,1);g.drawImage(o,-w/2,bot-h,w,h)}else g.drawImage(o,x-w/2,bot-h,w,h);g.restore();return true}
 // iguala a altura visivel do Mr.WorldWide a do Merlin (mede o 1o quadro de cada um e ajusta a escala dele)
-function fitChar(){const a=CHARS.merlin,b=CHARS.mrww;if(!a.ok||!b.ok)return;const vh=C=>{const c=document.createElement('canvas');c.width=C.fw;c.height=C.fh;const g=c.getContext('2d');g.drawImage(C.img,C.idle*C.fw,0,C.fw,C.fh,0,0,C.fw,C.fh);const d=g.getImageData(0,0,C.fw,C.fh).data;let t=-1,u=0;for(let y=0;y<C.fh;y++)for(let x=0;x<C.fw;x++)if(d[(y*C.fw+x)*4+3]>16){if(t<0)t=y;u=y}return t<0?C.fh:u-t+1};try{const h0=vh(a);a.th=h0*1.6;b.sc=(a.sc||1)*h0/vh(b)}catch(e){}}
+function fitChar(){const a=CHARS.merlin,b=CHARS.mrww;if(!a.ok||!b.ok)return;const vh=C=>{const c=document.createElement('canvas');c.width=C.fw;c.height=C.fh;const g=c.getContext('2d');g.drawImage(C.img,C.idle*C.fw,0,C.fw,C.fh,0,0,C.fw,C.fh);const d=g.getImageData(0,0,C.fw,C.fh).data;let t=-1,u=0;for(let y=0;y<C.fh;y++)for(let x=0;x<C.fw;x++)if(d[(y*C.fw+x)*4+3]>16){if(t<0)t=y;u=y}return t<0?C.fh:u-t+1};try{const h0=vh(a);a.th=h0*1.6;CHARS.erik.th=a.th*.92;b.sc=(a.sc||1)*h0/vh(b)}catch(e){}}
 CHARS.merlin.img.addEventListener('load',fitChar);CHARS.mrww.img.addEventListener('load',fitChar);
 $('chr').textContent=CHARS[curChar].name;
 function drawPlayer(p){const C=CHARS[curChar];
@@ -33,7 +34,7 @@ function drawPlayer(p){const C=CHARS[curChar];
  cx.save();cx.imageSmoothingEnabled=false;
  cx.fillStyle='#0005';cx.fillRect(Math.round(mx-5*s)/DPR,Math.round(my+(C.by-C.ay-1)*s)/DPR,10*s/DPR,s/DPR);
  if(p.inv>0&&Math.floor(G.t*20)%2)cx.globalAlpha=.4;
- if(!(curChar==='merlin'&&mDraw(cx,row,p.mv?Math.floor(G.t*8)%4:0,mx/DPR,(my+(C.by-C.ay)*s)/DPR,(C.th||24)*s/DPR,row===1)))cx.drawImage(C.img,f*C.fw,row*C.fh,C.fw,C.fh,x,y,w,h);cx.restore()}
+ if(!(CFR[curChar]&&mDraw(cx,row,p.mv?Math.floor(G.t*8)%4:0,mx/DPR,(my+(C.by-C.ay)*s)/DPR,(C.th||24)*s/DPR,row===1,curChar)))cx.drawImage(C.img,f*C.fw,row*C.fh,C.fw,C.fh,x,y,w,h);cx.restore()}
 // ---------- sprite dos slimes (spritesheet embutido, 4 quadros x 4 direcoes, 32x32 cada) ----------
 const SL={img:new Image(),ok:false};SL.img.onload=()=>{SL.ok=true};SL.img.src=SPR_26;
 const SL2={img:new Image(),ok:false};SL2.img.onload=()=>{SL2.ok=true};SL2.img.src=SPR_27;
@@ -222,7 +223,7 @@ function menuDraw(t){const W=innerWidth,H=innerHeight,d=Math.min(devicePixelRati
  MHOR.forEach(([k,o],i)=>{const T=SLT.find(q=>q.k===k),im=SLV[k].side[Math.floor(t*8+i*1.7)%4];if(!im.ok)return;const w=im.img.naturalWidth,ht=im.img.naturalHeight,kk=T.r*2.8*u/w,x=hx-(90+o)*u+Math.sin(t*2+i*2)*6*u,y=gy+4+(i%3)*5*u,hop=Math.abs(Math.sin(t*5+i))*5*u;
   c.fillStyle='rgba(0,0,0,.3)';c.fillRect(Math.round(x-w*kk*.35),Math.round(y),Math.round(w*kk*.7),Math.ceil(u));
   c.save();c.translate(Math.round(x),Math.round(y-hop));c.scale(-1,1);c.drawImage(im.img,Math.round(-w*kk/2),Math.round(-ht*kk),Math.round(w*kk),Math.round(ht*kk));c.restore()});
- const C=CHARS[curChar];if(C&&C.ok){const sc=s*(C.sc||1),f=C.seq[Math.floor(t*8)%C.seq.length];c.fillStyle='rgba(0,0,0,.35)';c.fillRect(Math.round(hx-5*sc),gy+4,Math.round(10*sc),Math.ceil(sc));if(!(curChar==='merlin'&&mDraw(c,2,Math.floor(t*8)%4,hx,gy+4,(C.th||24)*sc,false)))c.drawImage(C.img,f*C.fw,2*C.fh,C.fw,C.fh,Math.round(hx-C.ax*sc),Math.round(gy+4-C.by*sc),C.fw*sc,C.fh*sc)}}
+ const C=CHARS[curChar];if(C&&C.ok){const sc=s*(C.sc||1),f=C.seq[Math.floor(t*8)%C.seq.length];c.fillStyle='rgba(0,0,0,.35)';c.fillRect(Math.round(hx-5*sc),gy+4,Math.round(10*sc),Math.ceil(sc));if(!(CFR[curChar]&&mDraw(c,2,Math.floor(t*8)%4,hx,gy+4,(C.th||24)*sc,false,curChar)))c.drawImage(C.img,f*C.fw,2*C.fh,C.fw,C.fh,Math.round(hx-C.ax*sc),Math.round(gy+4-C.by*sc),C.fw*sc,C.fh*sc)}}
 function menuLoop(now){if(!$('menu').classList.contains('on')){mRun=false;return}mT+=Math.max(0,Math.min(.05,(now-mL)/1000));mL=now;try{menuDraw(mT)}catch(e){}requestAnimationFrame(menuLoop)}
 function menuHorde(){MHOR.length=0;for(let i=0;i<9;i++)MHOR.push([SLT[Math.floor(Math.random()*SLT.length)].k,i*90+Math.random()*50])}
 function menuStart(){if(mRun)return;mRun=true;menuHorde();mL=performance.now();requestAnimationFrame(menuLoop)}
@@ -346,7 +347,7 @@ function drawNpc(n){const c=CHARS[n.id];if(!c.ok)return;const k=2*(c.sc||1),bob=
  cx.imageSmoothingEnabled=false;cx.drawImage(c.img,c.idle*c.fw,0,c.fw,c.fh,Math.round(n.x-c.ax*k),Math.round(n.y-c.ay*k),c.fw*k,c.fh*k);
  cx.fillStyle='#f5c542';cx.fillRect(Math.round(n.x-3),Math.round(n.y-c.ay*k-14+bob),6,6);cx.fillRect(Math.round(n.x-1),Math.round(n.y-c.ay*k-20+bob),2,5)}
 function buildChars(){const b=$('chars');b.textContent='';for(const id in CHARS){const c=CHARS[id],ok=unlocked(id),el=document.createElement('button'),cv2=document.createElement('canvas');el.className='card';cv2.width=cv2.height=32;
-  const g=cv2.getContext('2d');g.imageSmoothingEnabled=false;if(id==='merlin'&&mDraw(g,0,0,16,c.by,c.th||24,false)){}else if(c.ok)g.drawImage(c.img,c.idle*c.fw,0,c.fw,c.fh,0,0,32,32);if(!ok)cv2.style.filter='brightness(0) opacity(.5)';
+  const g=cv2.getContext('2d');g.imageSmoothingEnabled=false;if(CFR[id]&&mDraw(g,0,0,16,31,Math.min(c.th||24,30),false,id)){}else if(c.ok&&c.img.naturalWidth)g.drawImage(c.img,c.idle*c.fw,0,c.fw,c.fh,0,0,32,32);if(!ok)cv2.style.filter='brightness(0) opacity(.5)';
   const nm=document.createElement('b'),sm=document.createElement('small'),st=document.createElement('small');nm.textContent=ok?c.name:'???';sm.textContent=ok?'Arma inicial: '+ITEMS[c.start].n:c.hint;st.textContent=id===curChar?'[ SELECIONADO ]':'';
   el.append(cv2,nm,sm,st);if(id===curChar)el.style.boxShadow='0 0 0 3px var(--ac)';
   el.onclick=()=>{if(!ok)return;curChar=id;meta.ch=id;save();$('chr').textContent=c.name;buildChars()};b.appendChild(el)}}
@@ -553,6 +554,7 @@ function update(dt){const p=G.p,m=mul();G.t+=dt;
  p.hp=Math.min(p.mhp,p.hp+.6*L('regen')*dt);p.inv-=dt;
  // spawns
  if(curMap!=='teste')waveTick(dt);
+ if(curMap==='floresta'&&G.t>=600&&!unlocked('erik'))unlockChar('erik');
  if(G.t>=300*(G.bossN+1)&&curMap!=='teste')spawnBoss();
  if(curMap!=='cidadela'&&curMap!=='teste'){
   if(G.t>=1500&&!G.pt){const a=Math.random()*6.283,f=freeSpot(p.x+Math.cos(a)*520,p.y+Math.sin(a)*520,30);G.pt={x:f.x,y:f.y};G.pm={t:0,txt:'PROCURE O PORTAL',c:'#7dff9a'};toast('Um portal surgiu! Ele abre aos 30:00')}

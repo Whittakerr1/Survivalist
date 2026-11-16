@@ -40,7 +40,7 @@ const OB={t0:{x:4,y:51,w:39,h:46,ax:19,ay:40,cr:12,co:6},t1:{x:52,y:51,w:39,h:46
  r0:{x:126,y:127,w:34,h:32,ax:17,ay:30,cr:22,co:14},r1:{x:143,y:110,w:16,h:17,ax:8,ay:15,cr:11,co:9},r2:{x:128,y:112,w:15,h:14,ax:7,ay:12,cr:10,co:8},r3:{x:128,y:97,w:15,h:13,ax:7,ay:11,cr:10,co:8}};
 const DC=[{x:49,y:4,w:7,h:3},{x:70,y:4,w:7,h:5},{x:58,y:10,w:5,h:3},{x:26,y:146,w:4,h:3},{x:8,y:167,w:4,h:3},{x:8,y:183,w:4,h:3}];
 const HC={fisico:['#ffffff','#cfd8dc','#ffcc80'],magico:['#e0b3ff','#b57bff','#ffffff'],eletrico:['#fff59d','#ffeb3b','#ffffff']};
-const VERSION='3.14.1';
+const VERSION='3.15.0';
 const SLT=[{k:'slime',t0:0,h:1.5,s:1,r:11,d:1,w:4,xk:0},{k:'poison',t0:0,h:2.5,s:.95,r:12,d:1.1,w:3,xk:0},{k:'ice',t0:0,h:4,s:.9,r:13,d:1.2,w:3,xk:1},{k:'fire',t0:0,h:6,s:1.05,r:13,d:1.4,w:2,xk:1},{k:'king',t0:0,h:15,s:.7,r:22,d:2.5,w:.3,xk:2,max:3}];
 const SLS=['small','slime','poison','big','ice','fire','king'];
 // Ondas (1 por minuto de run). min = inimigos vivos minimos (sem bosses), iv = segundos entre tentativas de spawn, ty = tipos da onda, ini = inimigos iniciais por mapa, cap = acima disso nada nasce periodicamente
@@ -50,6 +50,7 @@ const WV={cap:300,ini:{floresta:12,cidadela:20},
 const SLB='Assets/Inimigos/Slimes/',SLD={slime:'slime',poison:'poison-slime',ice:'ice-slime',fire:'fire-slime',king:'slime-king'};
 const VP=Array.from({length:8},(_,i)=>'Assets/armas/Sprite speels/Chemical Smoke/PNG/Chemical Smoke_Frame_'+String(i+1).padStart(2,'0')+'.png'),VE=Array.from({length:12},(_,i)=>'Assets/armas/Sprite speels/Poisonous Smoke/PNG/Posionous Smoke_Frame_'+String(i+1).padStart(2,'0')+'.png');
 const PATCHES=[
+ {v:'3.15.0',d:'15/11/2026',n:['Novo personagem: Erik, que começa com o Machado. Para desbloquear, sobreviva 10 minutos na Floresta.']},
  {v:'3.14.1',d:'15/11/2026',n:['Onda Musical: nova animação em pixel art. A cada pulso nasce uma descarga dourada com cruz de luz e anel quadrado, três ondas concêntricas que se expandem tremulando e vão escurecendo, e notas musicais que sobem e se afastam.','Merlin: novos sprites e tamanho maior.']},
  {v:'3.14.0',d:'15/11/2026',n:['Novo sistema de ondas: uma onda por minuto, cada uma com uma quantidade mínima de inimigos vivos e um intervalo de spawn. Se há menos inimigos que o mínimo, nascem os que faltam; se já há o mínimo, nasce 1 de cada tipo da onda.','Ao começar o mapa (e ao entrar na Cidadela) já nasce um grupo inicial de inimigos fora da tela.','Com 300 ou mais inimigos vivos nada nasce periodicamente (só bosses). O Rei Slime respeita o limite de 3 ao mesmo tempo.']},
  {v:'3.13.1',d:'15/11/2026',n:['Codex com abas: armas separadas por tipo de dano (Mágico, Físico e Elétrico) e uma aba só para os passivos.']},
