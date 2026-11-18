@@ -660,14 +660,14 @@ let last=0;
 function loop(now){const dt=Math.min(.05,(now-last)/1000);last=now;
  if(G){if(!G.pause&&!G.paused&&!G.mapOpen&&!G.tmenu&&!G.dead)update(dt);draw()}requestAnimationFrame(loop)}
 // Ranking global: cole aqui a URL do Firebase Realtime Database (sem barra no final). Vazio = ranking local.
-const lbKey=n=>n.replace(/[.$#\[\]\/]/g,'_');
+const lbKey=n=>n.replace(/[.$#\[\]\/]/g,'_');const LB_BAN=['saesel'],lbBan=n=>LB_BAN.includes(String(n).trim().toLowerCase());
 async function lbGet(){if(LB_URL){try{const r=await fetch(LB_URL+'/lb.json');return(await r.json())||{}}catch(e){return null}}try{return JSON.parse(localStorage.getItem('vs_lb')||'{}')}catch(e){return {}}}
-async function lbSubmit(k,t,mp){if(!user||!k)return;t=Math.ceil(t)+1;const key=lbKey(user);try{
+async function lbSubmit(k,t,mp){if(!user||!k||lbBan(user))return;t=Math.ceil(t)+1;const key=lbKey(user);try{
  if(LB_URL){const u=`${LB_URL}/lb/${encodeURIComponent(key)}.json`;const cur=await(await fetch(u)).json();if(cur&&cur.k>=k)return;await fetch(u,{method:'PUT',body:JSON.stringify({n:user,k,t,m:mp})}).then(r=>{if(!r.ok)console.warn('Ranking: Firebase recusou a gravacao (HTTP '+r.status+') - verifique as Rules do Realtime Database')})}
  else{const d=JSON.parse(localStorage.getItem('vs_lb')||'{}');if(!d[key]||d[key].k<k){d[key]={n:user,k,t,m:mp};localStorage.setItem('vs_lb',JSON.stringify(d))}}}catch(e){console.warn('Ranking: falha ao salvar',e)}}
 $('openlb').onclick=async()=>{const box=$('lbl');$('lbm').classList.add('on');box.textContent='Carregando...';const d=await lbGet();
  if(d===null){box.textContent='Não foi possível carregar o ranking.';return}
- const a=Object.values(d).filter(x=>x&&typeof x.k==='number'&&typeof x.n==='string').sort((p,q)=>q.k-p.k).slice(0,20);box.textContent='';
+ const a=Object.values(d).filter(x=>x&&typeof x.k==='number'&&typeof x.n==='string'&&!lbBan(x.n)).sort((p,q)=>q.k-p.k).slice(0,20);box.textContent='';
  if(!a.length)box.textContent='Ninguém no ranking ainda. Seja o primeiro!';
  a.forEach((x,i)=>{const r=document.createElement('div'),l=document.createElement('span'),v=document.createElement('b');
   r.style.cssText='display:flex;justify-content:space-between;gap:20px;padding:8px 14px;margin:6px 3px;background:var(--card);box-shadow:0 0 0 3px '+(x.n===user?'var(--ac)':'#0d0a14');
